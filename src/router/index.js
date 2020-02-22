@@ -1,29 +1,65 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Vue from "vue"
+import VueRouter from "vue-router"
+import axios from "axios"
+import TheLogin from "../views/TheLogin.vue"
+import TheDashboard from "../views/TheDashboard.vue"
+import TheDashboardProducts from "../views/TheDashboardProducts.vue"
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: "*",
+    redirect: "login"
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    path: "/",
+    name: "TheDashboard",
+    component: TheDashboard,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/login",
+    name: "TheLogin",
+    component: TheLogin
+  },
+  {
+    path: "/admin",
+    name: "TheDashboard",
+    component: TheDashboard,
+    children: [
+      {
+        path: "products",
+        name: "TheDashboardProducts",
+        component: TheDashboardProducts,
+        meta: { requiresAuth: true }
+      }
+    ]
   }
 ]
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth) {
+    const api = `${process.env.VUE_APP_APIPATH}/api/user/check`
+    axios.post(api).then(response => {
+      //console.log(response.data)
+      if (response.data.success) {
+        next()
+      } else {
+        next({
+          path: "/login"
+        })
+      }
+    })
+  } else {
+    next()
+  }
 })
 
 export default router
