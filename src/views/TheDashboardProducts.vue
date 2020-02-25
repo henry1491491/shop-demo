@@ -191,47 +191,82 @@
       </template>
     </b-modal>
 
-    <div>
-      <skeleton />
-      <b-table
-        :items="products"
-        :fields="fields"
-        responsive
-        show-empty
-        small
-        striped
-        stacked="md"
-      >
-        <template v-slot:cell(actions)="row">
-          <b-button
-            size="sm"
-            class="mr-1"
-            @click="showEditProduct(false,row.item)"
-          >
-            編輯
-          </b-button>
-          <b-button
-            size="sm"
-            class="mr-1"
-            @click="deleteProduct(row.item)"
-          >
-            刪除
-          </b-button>
-        </template>
-      </b-table>
-    </div>
+    <content-loader-table
+      :loading.sync="loading"
+      :width="contentLoaderOptions.width"
+      :height="contentLoaderOptions.height"
+      :speed="contentLoaderOptions.speed"
+    />
+
+    <b-table
+      v-if="!loading"
+      :items="products"
+      :fields="fields"
+      responsive
+      small
+      striped
+      stacked="md"
+    >
+      <template v-slot:cell(origin_price)="data">
+        {{ data.item.origin_price | currency  }}
+      </template>
+
+      <template v-slot:cell(price)="data">
+        {{ data.item.price | currency  }}
+      </template>
+
+      <template v-slot:cell(is_enabled)="data">
+        <p
+          v-show="data.item.is_enabled"
+          class="text-success"
+        >
+          是
+        </p>
+        <p
+          v-show="!data.item.is_enabled"
+          class="text-danger"
+        >
+          否
+        </p>
+      </template>
+
+      <template v-slot:cell(actions)="row">
+        <b-button
+          size="sm"
+          class="mr-1"
+          @click="showEditProduct(false,row.item)"
+        >
+          編輯
+        </b-button>
+        <b-button
+          size="sm"
+          class="mr-1"
+          @click="deleteProduct(row.item)"
+        >
+          刪除
+        </b-button>
+      </template>
+    </b-table>
+
+    <b-pagination-default
+      :pagination="pagination"
+      v-on:paginate="getProducts"
+    />
+
   </b-container>
 </template>
 
 <script>
-import Skeleton from "vue-loading-skeleton"
 export default {
   name: "TheDashboardProducts",
-  components: {
-    Skeleton
-  },
   data() {
     return {
+      contentLoaderOptions: {
+        width: 850,
+        height: 430,
+        speed: 2
+      },
+      loading: false,
       tempProduct: {
         title: "",
         category: "",
@@ -247,6 +282,7 @@ export default {
       isNew: false,
       file: null,
       products: [],
+      pagination: {},
       fields: [
         {
           key: "category",
@@ -263,22 +299,13 @@ export default {
         { key: "price", label: "售價" },
         {
           key: "is_enabled",
-          label: "是否啟用",
-          formatter: (value, key, item) => {
-            return value ? "是" : "否"
-          }
+          label: "是否啟用"
         },
         { key: "actions", label: "編輯" }
-      ],
-      totalRows: 1,
-      infoModal: {
-        id: "info-modal",
-        title: "",
-        content: ""
-      }
+      ]
     }
   },
-  computed: {},
+
   mounted() {
     this.getProducts()
   },
@@ -338,10 +365,13 @@ export default {
           }
         })
     },
-    getProducts() {
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/products`
+    getProducts(page = 1) {
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/products?page=${page}`
+      this.loading = true
       this.axios.get(api).then(response => {
+        this.loading = false
         this.products = response.data.products
+        this.pagination = response.data.pagination
       })
     }
   }

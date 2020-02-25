@@ -4,6 +4,9 @@ import axios from "axios"
 import TheLogin from "../views/TheLogin.vue"
 import TheDashboard from "../views/TheDashboard.vue"
 import TheDashboardProducts from "../views/TheDashboardProducts.vue"
+import TheDashboardOrders from "../views/TheDashboardOrders.vue"
+import TheDashboardCoupons from "../views/TheDashboardCoupons.vue"
+import TheCustomerOrder from "../views/TheCustomerOrder.vue"
 
 Vue.use(VueRouter)
 
@@ -11,12 +14,6 @@ const routes = [
   {
     path: "*",
     redirect: "login"
-  },
-  {
-    path: "/",
-    name: "TheDashboard",
-    component: TheDashboard,
-    meta: { requiresAuth: true }
   },
   {
     path: "/login",
@@ -32,7 +29,31 @@ const routes = [
         path: "products",
         name: "TheDashboardProducts",
         component: TheDashboardProducts,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: false } // 正式上線改成 true
+      },
+      {
+        path: "orders",
+        name: "TheDashboardOrders",
+        component: TheDashboardOrders,
+        meta: { requiresAuth: false }
+      },
+      {
+        path: "coupons",
+        name: "TheDashboardCoupons",
+        component: TheDashboardCoupons,
+        meta: { requiresAuth: false }
+      }
+    ]
+  },
+  {
+    path: "/",
+    name: "TheDashboard",
+    component: TheDashboard,
+    children: [
+      {
+        path: "customer_order",
+        name: "TheCustomerOrder",
+        component: TheCustomerOrder
       }
     ]
   }
