@@ -1,0 +1,35 @@
+#components-basecard_products {
+  .base-card {
+    height: 300px;
+    .card-img-top {
+      height: 45%;
+      position: relative;
+    }
+    .base-card-favor-icon {
+      color: #fcb8e7;
+      display: none;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+    }
+    &:hover .base-card-favor-icon {
+      color: #fcb8e7;
+      display: block;
+    }
+
+    .card-body {
+      .base-card-text-title {
+        font-size: 1.1rem;
+      }
+      .base-card-text-details {
+        font-size: 0.9rem;
+      }
+      .base-card-text-price {
+        font-size: 1.1rem;
+      }
+      .base-card-text-price-del {
+        font-size: 0.9rem;
+      }
+    }
+  }
+}

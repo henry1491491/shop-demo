@@ -1,7 +1,7 @@
 <template>
   <b-container
+    id="views-thedashboard_coupons"
     fluid
-    class="views-the_dashboard_coupons"
   >
     <b-button
       id="show-edit-coupons"
@@ -22,11 +22,11 @@
         </b-col>
         <b-col sm="10">
           <b-form-input
-            v-model="tempCoupon.title"
             id="input-coupon-title"
-            size="sm"
+            v-model="tempCoupon.title"
             placeholder="輸入優惠券名稱"
-          ></b-form-input>
+            size="sm"
+          />
         </b-col>
       </b-row>
 
@@ -36,11 +36,11 @@
         </b-col>
         <b-col sm="10">
           <b-form-input
-            v-model="tempCoupon.percent"
             id="input-coupon-percent"
-            size="sm"
+            v-model="tempCoupon.percent"
             placeholder="輸入折扣百分比"
-          ></b-form-input>
+            size="sm"
+          />
         </b-col>
       </b-row>
       <b-row class="my-1">
@@ -49,10 +49,10 @@
         </b-col>
         <b-col sm="10">
           <b-form-datepicker
-            v-model="tempCoupon.due_date"
             id="input-coupon-duedate"
+            v-model="tempCoupon.due_date"
             class="mb-2"
-          ></b-form-datepicker>
+          />
         </b-col>
       </b-row>
       <b-row class="my-1">
@@ -61,11 +61,11 @@
         </b-col>
         <b-col sm="10">
           <b-form-input
-            v-model="tempCoupon.code"
             id="input-coupon-code"
-            size="sm"
+            v-model="tempCoupon.code"
             placeholder="輸入優惠碼"
-          ></b-form-input>
+            size="sm"
+          />
         </b-col>
       </b-row>
 
@@ -77,7 +77,7 @@
           <b-form-radio-group
             id="input-coupon-isenabled"
             v-model="tempCoupon.is_enabled"
-            :options="options"
+            :options="isEnableOptions"
             name="input-coupon-isenabled"
           />
         </b-col>
@@ -86,17 +86,17 @@
       <template v-slot:modal-footer>
         <div class="w-100">
           <b-button
-            variant="primary"
-            size="md"
             class="float-right"
+            size="md"
+            variant="primary"
             @click="updateCoupon"
           >
             確認
           </b-button>
           <b-button
-            variant="danger"
-            size="md"
             class="mr-1 float-right"
+            size="md"
+            variant="danger"
             @click="cancerEditCoupon"
           >
             取消
@@ -106,14 +106,14 @@
     </b-modal>
 
     <content-loader-table
-      :loading.sync="loading"
+      :loading.sync="isLoading"
       :width="contentLoaderOptions.width"
       :height="contentLoaderOptions.height"
       :speed="contentLoaderOptions.speed"
     />
 
     <b-table
-      v-if="!loading"
+      v-if="!isLoading"
       :items="coupons"
       :fields="fields"
       responsive
@@ -139,15 +139,15 @@
 
       <template v-slot:cell(actions)="row">
         <b-button
-          size="sm"
           class="mr-1"
+          size="sm"
           @click="showEditCoupon(false,row.item)"
         >
           編輯
         </b-button>
         <b-button
-          size="sm"
           class="mr-1"
+          size="sm"
           @click="deleteCoupon(row.item)"
         >
           刪除
@@ -157,37 +157,25 @@
 
     <b-pagination-default
       :pagination="pagination"
-      v-on:paginate="getCoupons"
+      @paginate="getCoupons"
     />
 
   </b-container>
 </template>
 
 <script>
+import { apiAdminGetCoupons, apiAdminDeleteCoupons } from "../plugins/axios"
+
 export default {
   name: "TheDashboardCoupons",
   data() {
     return {
-      options: [
-        { text: "是", value: 1 },
-        { text: "否", value: 0 }
-      ],
       contentLoaderOptions: {
         width: 850,
         height: 430,
         speed: 2
       },
-      loading: false,
-      tempCoupon: {
-        title: "",
-        percent: null,
-        due_date: null,
-        is_enabled: 1
-      },
-      isNew: false,
-      file: null,
       coupons: [],
-      pagination: {},
       fields: [
         {
           key: "title",
@@ -206,10 +194,34 @@ export default {
           label: "是否啟用"
         },
         { key: "actions", label: "編輯" }
-      ]
+      ],
+      file: null,
+      isEnableOptions: [
+        { text: "是", value: 1 },
+        { text: "否", value: 0 }
+      ],
+      isNew: false,
+      pagination: {},
+      tempCoupon: {
+        title: "",
+        percent: null,
+        due_date: null,
+        is_enabled: 1
+      }
     }
   },
-
+  computed: {
+    loadingAmount() {
+      return this.$store.state.loadingAmount
+    },
+    isLoading() {
+      if (this.loadingAmount > 0) {
+        return true
+      } else {
+        return false
+      }
+    }
+  },
   mounted() {
     this.getCoupons()
   },
@@ -228,16 +240,15 @@ export default {
       this.$refs["edit-coupon-modal"].hide()
     },
     deleteCoupon(item) {
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/coupon/${item.id}`
-      this.axios.delete(api).then(response => {
+      apiAdminDeleteCoupons(item).then(response => {
         this.getCoupons()
       })
     },
     updateCoupon() {
-      let api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/coupon`
+      let api = `/admin/coupon`
       let httpMethod = "post"
       if (!this.isNew) {
-        api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/coupon/${this.tempCoupon.id}`
+        api = `/admin/coupon/${this.tempCoupon.id}`
         httpMethod = "put"
       }
       this.axios[httpMethod](api, { data: this.tempCoupon }).then(response => {
@@ -251,11 +262,9 @@ export default {
         }
       })
     },
-
     getCoupons(page = 1) {
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/coupons?page=${page}`
       this.loading = true
-      this.axios.get(api).then(response => {
+      apiAdminGetCoupons(page).then(response => {
         this.loading = false
         this.coupons = response.data.coupons
         this.pagination = response.data.pagination

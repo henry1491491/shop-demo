@@ -1,0 +1,25 @@
+#views-thecustomer_navbar {
+  .navbar-brand {
+    background: #ffffff;
+  }
+  .nav-item {
+    position: relative;
+    .badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      border-radius: 100%;
+    }
+  }
+
+  .nav-title {
+    font-size: 25px;
+    color: #39393e;
+  }
+  .btn-link {
+    text-decoration: none;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}

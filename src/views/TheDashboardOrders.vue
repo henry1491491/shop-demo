@@ -1,7 +1,7 @@
 <template>
   <b-container
+    id="views-thedashboard_orders"
     fluid
-    class="views-the_dashboard_orders"
   >
     <b-modal
       ref="edit-order-modal"
@@ -16,10 +16,10 @@
         </b-col>
         <b-col sm="10">
           <b-form-input
-            v-model="tempOrder.user.email"
             id="email"
-            size="sm"
+            v-model="tempOrder.user.email"
             placeholder="修改顧客信箱"
+            size="sm"
           />
         </b-col>
       </b-row>
@@ -31,10 +31,10 @@
         </b-col>
         <b-col sm="10">
           <b-form-input
-            v-model="tempOrder.user.address"
             id="address"
-            size="sm"
+            v-model="tempOrder.user.address"
             placeholder="修改顧客住址"
+            size="sm"
           />
         </b-col>
       </b-row>
@@ -46,10 +46,10 @@
         </b-col>
         <b-col sm="10">
           <b-form-input
-            v-model="tempOrder.user.name"
             id="name"
-            size="sm"
+            v-model="tempOrder.user.name"
             placeholder="修改顧客姓名"
+            size="sm"
           />
         </b-col>
       </b-row>
@@ -61,10 +61,10 @@
         </b-col>
         <b-col sm="10">
           <b-form-input
-            v-model="tempOrder.user.tel"
             id="tel"
-            size="sm"
+            v-model="tempOrder.user.tel"
             placeholder="修改顧客電話"
+            size="sm"
           />
         </b-col>
       </b-row>
@@ -76,10 +76,10 @@
         </b-col>
         <b-col sm="10">
           <b-form-input
-            v-model="tempOrder.total"
             id="total"
-            size="sm"
+            v-model="tempOrder.total"
             placeholder="修改應付金額"
+            size="sm"
           />
         </b-col>
       </b-row>
@@ -88,8 +88,8 @@
         id="checkbox-1"
         v-model="tempOrder.is_paid"
         name="checkbox-1"
-        value="true"
         unchecked-value="false"
+        value="true"
       >
         是否付款
       </b-form-checkbox>
@@ -97,17 +97,17 @@
       <template v-slot:modal-footer>
         <div class="w-100">
           <b-button
-            variant="primary"
-            size="md"
             class="float-right"
+            size="md"
+            variant="primary"
             @click="updateOrder"
           >
             確認
           </b-button>
           <b-button
-            variant="danger"
-            size="md"
             class="mr-1 float-right"
+            size="md"
+            variant="danger"
             @click="cancerEditOrder"
           >
             取消
@@ -117,14 +117,14 @@
     </b-modal>
 
     <content-loader-table
-      :loading.sync="loading"
+      :loading.sync="isLoading"
       :width="contentLoaderOptions.width"
       :height="contentLoaderOptions.height"
       :speed="contentLoaderOptions.speed"
     />
 
     <b-table
-      v-if="!loading"
+      v-if="!isLoading"
       :items="orders"
       :fields="fields"
       responsive
@@ -132,7 +132,6 @@
       striped
       stacked="md"
     >
-
       <template v-slot:cell(create_at)="data">
         {{data.item.create_at | moment(`YYYY年M月D日 HH:mm:ss`)}}
       </template>
@@ -176,15 +175,15 @@
 
       <template v-slot:cell(actions)="row">
         <b-button
-          size="sm"
           class="mr-1"
+          size="sm"
           @click="showEditOrder(false,row.item)"
         >
           編輯
         </b-button>
         <b-button
-          size="sm"
           class="mr-1"
+          size="sm"
           @click="deleteOrder(row.item)"
         >
           刪除
@@ -195,34 +194,23 @@
 
     <b-pagination-default
       :pagination="pagination"
-      v-on:paginate="getOrders"
+      @paginate="getOrders"
     />
   </b-container>
 </template>
 
 <script>
+import { apiAdminGetOrders } from "../plugins/axios"
+
 export default {
   name: "TheDashboardOrders",
   data() {
     return {
-      tempOrder: {
-        create_at: null,
-        is_paid: false,
-        message: "",
-        payment_method: "",
-        products: [],
-        total: null,
-        user: {}
-      },
-      isNew: false,
       contentLoaderOptions: {
         width: 850,
         height: 430,
         speed: 2
       },
-      loading: false,
-      orders: [],
-      pagination: {},
       fields: [
         {
           key: "create_at",
@@ -243,10 +231,33 @@ export default {
           label: "是否付款"
         },
         { key: "actions", label: "編輯" }
-      ]
+      ],
+      isNew: false,
+      orders: [],
+      pagination: {},
+      tempOrder: {
+        create_at: null,
+        is_paid: false,
+        message: "",
+        payment_method: "",
+        products: [],
+        total: null,
+        user: {}
+      }
     }
   },
-
+  computed: {
+    loadingAmount() {
+      return this.$store.state.loadingAmount
+    },
+    isLoading() {
+      if (this.loadingAmount > 0) {
+        return true
+      } else {
+        return false
+      }
+    }
+  },
   mounted() {
     this.getOrders()
   },
@@ -265,10 +276,8 @@ export default {
       this.$refs["edit-order-modal"].hide()
     },
     getOrders(page = 1) {
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/orders?page=${page}`
       this.loading = true
-      this.axios.get(api).then(response => {
-        console.log(response.data.orders)
+      apiAdminGetOrders(page).then(response => {
         this.loading = false
         this.orders = response.data.orders
         this.pagination = response.data.pagination
@@ -291,8 +300,7 @@ export default {
           console.log("新增失敗")
         }
       })
-    },
-    deleteOrder() {}
+    }
   }
 }
 </script>

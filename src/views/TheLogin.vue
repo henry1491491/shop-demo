@@ -1,31 +1,30 @@
 <template>
-  <div class="views-the_login">
+  <div id="views-thelogin">
     <b-card title="請登入">
       <validation-observer
-        ref="observer"
         v-slot="{ passes }"
+        ref="observer"
       >
         <b-form
-          @submit.prevent="passes(signIn)"
           v-if="show"
+          @submit.prevent="passes(signIn)"
         >
           <validation-provider
+            v-slot="validationContext"
             name="信箱"
             rules="required|email"
-            v-slot="validationContext"
           >
 
             <b-form-group
               id="input-group-1"
-              label=""
               label-for="input-1"
             >
               <b-form-input
+                id="input-1"
                 v-model="user.username"
                 :state="getValidationState(validationContext)"
-                id="input-1"
-                required
                 placeholder="請輸入帳號"
+                required
               >
               </b-form-input>
               <b-form-invalid-feedback id="input-1-live-feedback">
@@ -35,21 +34,20 @@
           </validation-provider>
 
           <validation-provider
+            v-slot="validationContext"
             name="密碼"
             rules="required|min:6|max:12"
-            v-slot="validationContext"
           >
             <b-form-group
               id="input-group-2"
-              label=""
               label-for="input-2"
             >
               <b-form-input
+                id="input-2"
                 v-model="user.password"
                 :state="getValidationState(validationContext)"
-                id="input-2"
-                required
                 placeholder="請輸入密碼"
+                required
               ></b-form-input>
               <b-form-invalid-feedback id="input-1-live-feedback">
                 {{ validationContext.errors[0] }}
@@ -58,9 +56,9 @@
           </validation-provider>
 
           <b-button
+            size="sm"
             type="submit"
             variant="primary"
-            size="sm"
             @click="signIn"
           >
             提交
@@ -72,20 +70,22 @@
 </template>
 
 <script>
+import { apiLogLogin } from "../plugins/axios"
+
 export default {
   data() {
     return {
-      user: {
-        username: "",
-        password: ""
-      },
       form: {
         email: "",
         name: "",
         food: null,
         checked: []
       },
-      show: true
+      show: true,
+      user: {
+        username: "",
+        password: ""
+      }
     }
   },
   methods: {
@@ -93,25 +93,13 @@ export default {
       return dirty || validated ? valid : null
     },
     signIn() {
-      const api = `${process.env.VUE_APP_APIPATH}/admin/signin`
-      this.axios.post(api, this.user).then(response => {
-        console.log(response.data)
-        if (response.data.success) {
-          this.$router.push("/admin/products")
-        }
+      apiLogLogin(this.user).then(response => {
+        if (!response.data.success) return
+        this.$router.push("/admin/products")
       })
     }
   }
 }
 </script>
 
-<style lang="scss">
-.views-the_login {
-  height: auto;
-  max-width: 20rem;
-  margin: 0 auto;
-  .card {
-    margin-top: 30%;
-  }
-}
-</style>
+
