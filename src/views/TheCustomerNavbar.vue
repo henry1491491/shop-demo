@@ -30,15 +30,25 @@
                 管理員
               </b-tooltip>
             </template>
-            <b-dropdown-item href="/admin/products">
+
+            <router-link
+              tag="b-dropdown-item"
+              to="/admin/products"
+            >
               產品列表
-            </b-dropdown-item>
-            <b-dropdown-item href="/admin/orders">
+            </router-link>
+            <router-link
+              tag="b-dropdown-item"
+              to="/admin/orders"
+            >
               訂單列表
-            </b-dropdown-item>
-            <b-dropdown-item href="/admin/coopons">
+            </router-link>
+            <router-link
+              tag="b-dropdown-item"
+              to="/admin/coopons"
+            >
               優惠券
-            </b-dropdown-item>
+            </router-link>
           </b-dropdown>
 
           <b-nav-item>
@@ -53,6 +63,19 @@
               variant="secondary"
             >
               心願清單
+            </b-tooltip>
+          </b-nav-item>
+
+          <b-nav-item>
+            <ticket-percent
+              id="ticket-percent"
+              class="text-secondary"
+            />
+            <b-tooltip
+              target="ticket-percent"
+              variant="secondary"
+            >
+              優惠券
             </b-tooltip>
           </b-nav-item>
 
@@ -94,46 +117,65 @@
           >
             你的購物車沒有東西呢
           </h5>
-          <b-table
+          <b-table-simple
             v-show="carts.length"
-            :items="carts"
-            :fields="cardfields"
+            caption-top
             hover
+            outlined
             responsive
             small
-            stacked="md"
           >
-            <template v-slot:cell(title)="data">
-              <p class="m-0">{{data.item.product.title}}</p>
-              <p
-                v-if="data.item.coupon"
-                class="m-0 text-success"
+            <b-thead head-variant="light">
+              <b-tr>
+                <b-th>
+                  <span class="ml-2">品名</span>
+                </b-th>
+                <b-th>數量</b-th>
+                <b-th
+                  colspan="2"
+                  class="text-right"
+                >
+                  <span class="mr-2">單價</span>
+                </b-th>
+              </b-tr>
+            </b-thead>
+            <b-tbody>
+              <b-tr
+                v-for="item in carts"
+                :key="item.id"
               >
-                已套用優惠券
-              </p>
-            </template>
-
-            <template v-slot:cell(qty)="data">
-              {{data.item.qty}} / {{data.item.product.unit}}
-            </template>
-
-            <template v-slot:cell(price)="data">
-              {{data.item.total | currency}}
-            </template>
-
-            <template v-slot:cell(action)="row">
-              <b-button
-                class="mr-1"
-                size="sm"
-                variant="outline-danger"
-                @click="removeCart(row.item.id)"
-              >
-                <trash-can-outline />
-              </b-button>
-            </template>
-          </b-table>
+                <b-td>
+                  <b-button
+                    class="text-danger"
+                    size="sm"
+                    variant="link"
+                    @click="removeCart(item.id)"
+                  >
+                    <b-spinner
+                      v-if="status.loadingItem === item.id"
+                      label="Spinning"
+                      small
+                      variant="danger"
+                    />
+                    <trash-can-outline v-else />
+                  </b-button>
+                  {{ item.product.title }}
+                  <span
+                    v-if="item.coupon"
+                    class="m-0 text-success"
+                  >(已套用優惠券)</span>
+                </b-td>
+                <b-td>{{ item.qty }} / {{ item.product.unit }}</b-td>
+                <b-td
+                  colspan="2"
+                  class="text-right"
+                >
+                  <span class="mr-2">{{ item.final_total }}</span>
+                </b-td>
+              </b-tr>
+            </b-tbody>
+          </b-table-simple>
         </b-card>
-
         <template v-slot:modal-footer>
           <div
             v-show="carts.length"
@@ -229,8 +271,25 @@ export default {
     }
   },
   computed: {
+    carts() {
+      return this.$store.state.customer.carts
+    },
+    cartsLength() {
+      return this.$store.state.customer.carts.length
+    },
+    cartsTotal() {
+      return this.$store.state.customer.cartsTotal
+    },
     isPaid() {
       return this.$store.state.customer.order.is_paid
+    },
+    status: {
+      get() {
+        return this.$store.state.customer.status
+      },
+      set(val) {
+        this.$store.commit("customer/SET_STATUS_LOADINGITEM", val)
+      }
     },
     steps() {
       if (this.$route.name === "TheCustomerShoppingCartContent") {
@@ -262,30 +321,24 @@ export default {
           return el
         })
       }
-    },
-    cartsTotal() {
-      return this.$store.state.customer.cartsTotal
-    },
-    carts() {
-      return this.$store.state.customer.carts
-    },
-    cartsLength() {
-      return this.$store.state.customer.carts.length
     }
   },
   mounted() {
     this.$store.dispatch("customer/getCart")
   },
   methods: {
-    removeCart(id) {
-      apiCustomerRemoveCart(id).then(response => {
-        this.$store.dispatch("customer/getCart")
-      })
+    async removeCart(id) {
+      this.$store.commit("customer/SET_STATUS_LOADINGITEM", id)
+      let response = await apiCustomerRemoveCart(id)
+      if (!response.data.success) return
+      response = await this.$store.dispatch("customer/getCart")
+      if (!response.status) return
+      this.$store.commit("customer/SET_STATUS_LOADINGITEM", "")
     },
     showCarts() {
       this.$refs["show-cart-modal"].show()
     },
-    async goToContentFavor() {
+    goToContentFavor() {
       this.$router.push("/favor")
     }
   }

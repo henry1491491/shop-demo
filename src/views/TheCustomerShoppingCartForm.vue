@@ -1,7 +1,11 @@
 <template>
   <div id="views-theshoppingcart_form">
-    <h3 class="mt-2">填寫基本資料</h3>
-    <b-card>
+    <h3 class="my-4">填寫基本資料</h3>
+    <b-card
+      img-src="https://images.unsplash.com/photo-1548872233-fa78ae35a3aa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60"
+      img-alt="orchids-form"
+      img-left
+    >
       <validation-observer
         v-slot="{ passes }"
         ref="observer"
@@ -127,6 +131,7 @@
           </validation-provider>
 
           <b-button
+            class="float-right"
             size="sm"
             type="submit"
             variant="primary"

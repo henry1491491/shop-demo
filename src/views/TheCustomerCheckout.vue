@@ -1,6 +1,6 @@
 <template>
   <div id="views-thecustomer_checkout">
-    <b-card class="my-5 justify-content-center">
+    <b-card class="my-4 justify-content-center">
       <b-form @submit="payOrder">
         <b-row>
           <b-col>
@@ -98,6 +98,7 @@
         <b-button
           v-if="order.is_paid === false"
           class="float-right"
+          size="sm"
           variant="outline-danger"
           @click="payOrder"
         >

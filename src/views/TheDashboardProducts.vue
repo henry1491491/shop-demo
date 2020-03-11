@@ -332,10 +332,10 @@ export default {
       this.axios[httpMethod](api, { data: this.tempProduct }).then(response => {
         if (response.data.success) {
           this.$refs["edit-product-modal"].hide()
-          this.getProducts()
+          this.getProducts(this.pagination.current_page)
         } else {
           this.$refs["edit-product-modal"].hide()
-          this.getProducts()
+          this.getProducts(this.pagination.current_page)
           console.log("新增失敗")
         }
       })

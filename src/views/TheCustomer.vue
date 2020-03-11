@@ -36,11 +36,9 @@
               v-for="(i,key) in 12"
               v-show="isLoading"
               :key="key"
-              cols="12"
-              xs="6"
-              sm="6"
-              md="4"
-              lg="3"
+              cols="4"
+              sm="3"
+              lg="2"
             >
               <v-skeleton-loader
                 max-height="300"

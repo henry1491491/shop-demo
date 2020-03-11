@@ -76,7 +76,9 @@
         :img-src="product.imageUrl"
         :img-alt="product.title"
         :title="product.title"
+        img-height="300px"
         img-top
+        class="card-img-top-modal"
       >
         <b-card-text>
           {{product.description}}

@@ -72,14 +72,20 @@ export default {
         dispatch("getCart")
       })
     },
-    getCart({ commit }) {
-      apiGetCart().then(response => {
+    async getCart({ commit }) {
+      try {
+        let response = await apiGetCart()
+        if (!response.data.success) return
         commit("SET_CARTS", response.data.data.carts)
         commit("SET_CARTS_TOTAL", {
           total: response.data.data.total,
           final_total: response.data.data.final_total
         })
-      })
+        return { status: "success" }
+      } catch (e) {
+        console.log(e)
+        return { status: "false" }
+      }
     },
     async getProductsAll({ dispatch }) {
       let response = await getProductsAll()

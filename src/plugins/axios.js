@@ -18,6 +18,10 @@ const DefaultRequest = axios.create({
   baseURL: `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}`
 })
 
+const NotLoadingRequest = axios.create({
+  baseURL: `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}`
+})
+
 // Log
 export const apiLogLogin = data => LogRequest.post("/admin/signin", data)
 export const apiLogLogout = () => LogRequest.post("/logout")
@@ -47,10 +51,10 @@ export const apiCustomerGetOrder = data => DefaultRequest.get(`/order/${data}`)
 export const apiCustomerPayOrder = data => DefaultRequest.post(`/pay/${data}`)
 
 export const apiCustomerGetProduct = data =>
-  DefaultRequest.get(`/product/${data}`)
+  NotLoadingRequest.get(`/product/${data}`)
 
 export const apiCustomerRemoveCart = data =>
-  DefaultRequest.delete(`/cart/${data}`)
+  NotLoadingRequest.delete(`/cart/${data}`)
 
 export const apiCustomerAddCouponCode = data =>
   DefaultRequest.post(`/coupon`, data)
@@ -60,9 +64,9 @@ export const apiCustomerCreateOrder = data =>
 
 // store / customer
 
-export const apiGetCart = () => DefaultRequest.get(`/cart`)
+export const apiGetCart = () => NotLoadingRequest.get(`/cart`)
 
-export const apiAddToCart = data => DefaultRequest.post(`/cart`, data)
+export const apiAddToCart = data => NotLoadingRequest.post(`/cart`, data)
 
 export const getProductsAll = () => DefaultRequest.get(`/products/all`)
 

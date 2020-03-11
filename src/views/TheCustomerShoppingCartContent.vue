@@ -13,22 +13,39 @@
       >
         <b-thead head-variant="light">
           <b-tr>
-            <b-th>品名</b-th>
+            <b-th>
+              <span class="ml-2">品名</span>
+            </b-th>
             <b-th>數量</b-th>
             <b-th
               colspan="2"
               class="text-right mr-3"
-            >單價</b-th>
-            <b-th></b-th>
+            >
+              <span class="mr-2">單價</span>
+            </b-th>
           </b-tr>
         </b-thead>
-
         <b-tbody>
           <b-tr
             v-for="item in carts"
             :key="item.id"
           >
-            <b-td>{{ item.product.title }}
+            <b-td>
+              <b-button
+                class="text-danger"
+                size="sm"
+                variant="link"
+                @click="removeCart(item.id)"
+              >
+                <b-spinner
+                  v-if="status.loadingItem === item.id"
+                  label="Spinning"
+                  small
+                  variant="danger"
+                />
+                <trash-can-outline v-else />
+              </b-button>
+              {{ item.product.title }}
               <span
                 v-if="item.coupon"
                 class="m-0 text-success"
@@ -38,65 +55,12 @@
             <b-td
               colspan="2"
               class="text-right mr-3"
-            >{{ item.final_total }}</b-td>
-            <b-td></b-td>
+            >
+              <span class="mr-2">{{ item.final_total }}</span>
+            </b-td>
           </b-tr>
         </b-tbody>
-        <!--
-        <b-tfoot>
-          <b-tr>
-            <b-td colspan="2">總計：</b-td>
-            <b-td
-              colspan="2"
-              class="text-right mr-3"
-            >{{ order.total }}</b-td>
-            <b-td></b-td>
-          </b-tr>
-        </b-tfoot>
-        -->
       </b-table-simple>
-
-      <!--
-      <b-table
-        :items="carts"
-        :fields="cardfields"
-        hover
-        responsive
-        small
-        stacked="md"
-      >
-        <template v-slot:cell(title)="data">
-          <p class="m-0">
-            {{data.item.product.title}}
-          </p>
-          <p
-            v-if="data.item.coupon"
-            class="m-0 text-success"
-          >
-            已套用優惠券
-          </p>
-        </template>
-
-        <template v-slot:cell(qty)="data">
-          {{data.item.qty}} / {{data.item.product.unit}}
-        </template>
-
-        <template v-slot:cell(price)="data">
-          {{data.item.total | currency}}
-        </template>
-
-        <template v-slot:cell(action)="row">
-          <b-button
-            class="mr-1"
-            size="sm"
-            variant="outline-danger"
-            @click="removeCart(row.item.id)"
-          >
-            <trash-can-outline />
-          </b-button>
-        </template>
-      </b-table>
-      -->
 
       <b-card>
         <b-card-text class="text-right m-0 p-1">
@@ -138,6 +102,7 @@
         </b-button>
       </div>
     </div>
+
     <div v-else>
       <b-card>
         <b-card-text class="text-center">
@@ -148,7 +113,7 @@
         <b-button
           class="mt-2 mr-2"
           size="sm"
-          variant="success"
+          variant="primary"
           @click="$router.push('/')"
         >
           回首頁
@@ -192,24 +157,35 @@ export default {
     },
     cartsTotal() {
       return this.$store.state.customer.cartsTotal
+    },
+    status: {
+      get() {
+        return this.$store.state.customer.status
+      },
+      set(val) {
+        this.$store.commit("customer/SET_STATUS_LOADINGITEM", val)
+      }
     }
   },
   mounted() {
     this.$store.dispatch("customer/getCart")
   },
   methods: {
-    removeCart(id) {
-      apiCustomerRemoveCart(id).then(response => {
-        this.$store.dispatch("customer/getCart")
-      })
+    async removeCart(id) {
+      this.$store.commit("customer/SET_STATUS_LOADINGITEM", id)
+      let response = await apiCustomerRemoveCart(id)
+      if (!response.data.success) return
+      response = await this.$store.dispatch("customer/getCart")
+      if (!response.status) return
+      this.$store.commit("customer/SET_STATUS_LOADINGITEM", "")
     },
-    addCouponCode() {
+    async addCouponCode() {
       const coupon = {
         code: this.coupon_code
       }
-      apiCustomerAddCouponCode({ data: coupon }).then(response => {
-        this.$store.dispatch("customer/getCart")
-      })
+      let response = await apiCustomerAddCouponCode({ data: coupon })
+      if (!response.data.success) return
+      this.$store.dispatch("customer/getCart")
     }
   }
 }

@@ -15,12 +15,6 @@
         Orchids 蘭花購物網
       </h5>
     </b-col>
-
-    <b-col md="4">
-      <p class="text-secondary text-center">
-        本網站為作業練習用
-      </p>
-    </b-col>
   </b-row>
 </template>
 
