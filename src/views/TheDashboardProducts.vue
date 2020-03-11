@@ -182,13 +182,6 @@
       </template>
     </b-modal>
 
-    <content-loader-table
-      :height="contentLoaderOptions.height"
-      :loading.sync="isLoading"
-      :speed="contentLoaderOptions.speed"
-      :width="contentLoaderOptions.width"
-    />
-
     <b-table
       v-if="!isLoading"
       :items="products"
@@ -257,11 +250,6 @@ export default {
   name: "TheDashboardProducts",
   data() {
     return {
-      contentLoaderOptions: {
-        width: 850,
-        height: 430,
-        speed: 2
-      },
       file: null,
       fields: [
         {

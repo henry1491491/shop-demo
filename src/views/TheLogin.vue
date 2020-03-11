@@ -48,7 +48,8 @@
                 :state="getValidationState(validationContext)"
                 placeholder="請輸入密碼"
                 required
-              ></b-form-input>
+                type="password"
+              />
               <b-form-invalid-feedback id="input-1-live-feedback">
                 {{ validationContext.errors[0] }}
               </b-form-invalid-feedback>

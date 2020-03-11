@@ -116,13 +116,6 @@
       </template>
     </b-modal>
 
-    <content-loader-table
-      :loading.sync="isLoading"
-      :width="contentLoaderOptions.width"
-      :height="contentLoaderOptions.height"
-      :speed="contentLoaderOptions.speed"
-    />
-
     <b-table
       v-if="!isLoading"
       :items="orders"
@@ -181,13 +174,6 @@
         >
           編輯
         </b-button>
-        <b-button
-          class="mr-1"
-          size="sm"
-          @click="deleteOrder(row.item)"
-        >
-          刪除
-        </b-button>
       </template>
 
     </b-table>
@@ -206,11 +192,6 @@ export default {
   name: "TheDashboardOrders",
   data() {
     return {
-      contentLoaderOptions: {
-        width: 850,
-        height: 430,
-        speed: 2
-      },
       fields: [
         {
           key: "create_at",

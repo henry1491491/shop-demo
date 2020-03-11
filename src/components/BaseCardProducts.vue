@@ -9,14 +9,14 @@
       tag="article"
     >
       <heart
-        v-if="favorArray.indexOf(item.title) !== -1"
+        v-if="favorList.indexOf(item.title) !== -1"
         class="base-card-favor-icon text-danger"
-        @click="addToFavoriteList(item)"
+        @click="setFavorTitle(item)"
       />
       <heart-outline
-        v-if="favorArray.indexOf(item.title) === -1"
+        v-if="favorList.indexOf(item.title) === -1"
         class="base-card-favor-icon text-danger"
-        @click="addToFavoriteList(item)"
+        @click="setFavorTitle(item)"
       />
 
       <b-card-body class="p-2">
@@ -30,7 +30,7 @@
           </b-link>
         </b-card-title>
 
-        <b-card-text class="base-card-text-details text-truncate">
+        <b-card-text class="base-card-text-details text-truncate mb-1">
           {{item.description}}
         </b-card-text>
 
@@ -39,13 +39,16 @@
             NT {{ item.price | currency }}
           </span>
 
-          <del class="base-card-text-price-del text-muted m-1">
+          <del
+            v-show="item.price !== item.origin_price"
+            class="base-card-text-price-del text-muted m-1"
+          >
             NT {{ item.origin_price | currency }}
           </del>
         </b-card-text>
       </b-card-body>
 
-      <div class="base-card-btn d-flex justify-content-between m-0 p-2">
+      <div class="base-card-btn d-flex justify-content-between m-0 p-1">
         <a
           href="#"
           class="card-link"
@@ -66,7 +69,7 @@
           class="ml-auto"
           size="sm"
           variant="danger"
-          @click="goToShoppingCart"
+          @click="goToShoppingCart(item.id)"
         >
           直接購買
         </b-button>
@@ -80,21 +83,25 @@ export default {
   name: "BaseCardProducts",
   props: {
     item: { type: Object },
-    favorArray: { type: Array },
+    favorList: { type: Array },
     status: { type: Object }
   },
   methods: {
-    addToFavoriteList(item) {
-      this.$emit("add-to-favorite-list", item)
+    setFavorTitle(item) {
+      this.$emit("set-favor-title", item)
     },
     getProduct(id) {
       this.$emit("get-product", id)
     },
-    addToCart(id) {
+    async addToCart(id) {
       this.$emit("add-to-cart", id)
+      return true
     },
-    goToShoppingCart() {
-      this.$emit("go-to-shopping-cart")
+    async goToShoppingCart(id) {
+      let result = await this.addToCart(id)
+      if (result) {
+        this.$emit("go-to-shopping-cart")
+      }
     }
   }
 }

@@ -85,7 +85,7 @@
             <ul class="nav flex-column mb-2">
               <li class="nav-item">
                 <router-link
-                  to="/customer"
+                  to="/"
                   class="nav-link d-flex align-items-center"
                 >
                   <clipboard-list-outline-icon class="mr-1" />
@@ -112,6 +112,11 @@ import { apiLogLogout } from "../plugins/axios"
 
 export default {
   name: "TheDashboard",
+  data() {
+    return {
+      fullPage: true
+    }
+  },
   methods: {
     signOut() {
       apiLogLogout().then(response => {

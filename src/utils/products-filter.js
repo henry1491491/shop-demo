@@ -3,25 +3,19 @@ import Vue from "vue"
 Vue.prototype.$productsFilter = {
   ProductFilters: {
     rangesFilter(products, ranges) {
-      //console.log(products)
-      if (ranges.length === 0) {
-        return products
-      } else {
-        /**
-         *  循環多個區間條件，
-         * 每種區間類型應該只有一個，
-         * 比如價格區間不會有1000-2000和4000-6000同時需要的情況
-         */
-        for (let range of ranges) {
-          // 多個不同類型區間是與邏輯，可以直接賦值給自身
-          products = products.filter(item => {
-            return (
-              item[range.type] >= range.low && item[range.type] <= range.high
-            )
-          })
-        }
-        return products
+      if (ranges.length === 0) return products
+      /**
+       *  循環多個區間條件，
+       * 每種區間類型應該只有一個，
+       * 比如價格區間不會有1000-2000和4000-6000同時需要的情況
+       */
+      for (let range of ranges) {
+        // 多個不同類型區間是與邏輯，可以直接賦值給自身
+        products = products.filter(item => {
+          return item[range.type] >= range.low && item[range.type] <= range.high
+        })
       }
+      return products
     },
     choosesFilter(products, chooses) {
       let tmpProducts = []
@@ -29,7 +23,6 @@ Vue.prototype.$productsFilter = {
         tmpProducts = products
       } else {
         // 選擇類型條件是或邏輯，使用數組連接concat
-
         for (let choice of chooses) {
           tmpProducts = tmpProducts.concat(
             products.filter(item => {

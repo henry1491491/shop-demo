@@ -1,13 +1,13 @@
 <template>
-  <div class="views-thecustomer_navbar">
+  <div id="views-thecustomer_navbar">
     <b-navbar
       toggleable="lg"
       type="light"
       variant="fade"
     >
       <b-button
-        class="d-flex align-items-center justify-content-center"
         :href="navbarHref"
+        class="d-flex align-items-center justify-content-center"
         variant="link"
       >
         <img
@@ -19,7 +19,9 @@
         >
         <span class="nav-title">{{navbarTitle}}</span>
       </b-button>
+
       <slot></slot>
+
     </b-navbar>
   </div>
 </template>

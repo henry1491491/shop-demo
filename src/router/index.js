@@ -10,8 +10,9 @@ import TheDashboardCoupons from "../views/TheDashboardCoupons.vue"
 
 import TheCustomer from "../views/TheCustomer.vue"
 import TheCustomerCheckout from "../views/TheCustomerCheckout.vue"
-import TheCustomerContentFavor from "../views/TheCustomerContentFavor.vue"
+import TheCustomerContent from "../views/TheCustomerContent.vue"
 import TheCustomerShoppingCartContent from "../views/TheCustomerShoppingCartContent"
+import TheCustomerShoppingCartForm from "../views/TheCustomerShoppingCartForm.vue"
 
 Vue.use(VueRouter)
 
@@ -34,7 +35,7 @@ const routes = [
         path: "products",
         name: "TheDashboardProducts",
         component: TheDashboardProducts,
-        meta: { requiresAuth: false } // 正式上線改成 true
+        meta: { requiresAuth: false }
       },
       {
         path: "orders",
@@ -52,37 +53,40 @@ const routes = [
   },
   {
     path: "/",
-    name: "TheDashboard",
-    component: TheDashboard,
+    name: "TheCustomer",
+    component: TheCustomer,
     children: [
       {
-        path: "customer",
-        name: "TheCustomer",
-        component: TheCustomer,
-        children: [
-          {
-            path: "favor",
-            name: "TheCustomerContentFavor",
-            component: TheCustomerContentFavor
-          },
-          {
-            path: "customer_checkout/:orderId",
-            name: "TheCustomerCheckout",
-            component: TheCustomerCheckout
-          },
-          {
-            path: "customer_carts",
-            name: "TheCustomerShoppingCartContent",
-            component: TheCustomerShoppingCartContent
-          }
-        ]
+        path: "",
+        name: "TheCustomerContent",
+        component: TheCustomerContent
+      },
+      {
+        path: "favor",
+        name: "TheCustomerContent",
+        component: TheCustomerContent
+      },
+      {
+        path: "/customer_carts",
+        name: "TheCustomerShoppingCartContent",
+        component: TheCustomerShoppingCartContent
+      },
+      {
+        path: "/customer_carts_form",
+        name: "TheCustomerShoppingCartForm",
+        component: TheCustomerShoppingCartForm
+      },
+      {
+        path: "/customer_checkout/:orderId",
+        name: "TheCustomerCheckout",
+        component: TheCustomerCheckout
       }
     ]
   }
 ]
 
 const router = new VueRouter({
-  mode: "history",
+  //mode: "history",
   base: process.env.BASE_URL,
   routes
 })

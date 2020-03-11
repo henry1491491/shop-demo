@@ -1,6 +1,6 @@
 <template>
   <div id="views-theshoppingcart_form">
-    <h1>填寫基本資料</h1>
+    <h3 class="mt-2">填寫基本資料</h3>
     <b-card>
       <validation-observer
         v-slot="{ passes }"
@@ -173,3 +173,4 @@ export default {
   }
 }
 </script>
+

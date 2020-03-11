@@ -9,37 +9,12 @@ axios.defaults.baseURL = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_A
 
 axios.defaults.withCredentials = true
 
-axios.interceptors.request.use(
-  config => {
-    store.dispatch("setLoading", true)
-    return config
-  },
-  error => {
-    return Promise.reject(error)
-  }
-)
-
-axios.interceptors.response.use(
-  response => {
-    store.dispatch("setLoading", false)
-    return response
-  },
-  error => {
-    store.dispatch("setLoading", false)
-    return Promise.reject(error)
-  }
-)
-
 // Log
 const LogRequest = axios.create({
   baseURL: `${process.env.VUE_APP_APIPATH}`
 })
-// Admin
-const AdminRequest = axios.create({
-  baseURL: `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}`
-})
-// Customer
-const CustomerRequest = axios.create({
+
+const DefaultRequest = axios.create({
   baseURL: `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}`
 })
 
@@ -49,45 +24,65 @@ export const apiLogLogout = () => LogRequest.post("/logout")
 
 // Admin
 export const apiAdminUploadFile = (data, header) =>
-  AdminRequest.post("/admin/upload", data, header)
+  DefaultRequest.post("/admin/upload", data, header)
 
 // Customer
 export const apiAdminGetProducts = data =>
-  CustomerRequest.get(`/admin/products?page=${data}`)
+  DefaultRequest.get(`/admin/products?page=${data}`)
 
 export const apiAdminDeleteProduct = data =>
-  CustomerRequest.delete(`/admin/product/${data.id}`)
+  DefaultRequest.delete(`/admin/product/${data.id}`)
 
 export const apiAdminGetOrders = data =>
-  CustomerRequest.get(`/admin/orders?page=${data}`)
+  DefaultRequest.get(`/admin/orders?page=${data}`)
 
 export const apiAdminGetCoupons = data =>
-  CustomerRequest.get(`/admin/coupons?page=${data}`)
+  DefaultRequest.get(`/admin/coupons?page=${data}`)
 
 export const apiAdminDeleteCoupons = data =>
-  CustomerRequest.delete(`/admin/coupon/${data.id}`)
+  DefaultRequest.delete(`/admin/coupon/${data.id}`)
 
-export const apiCustomerGetOrder = data => CustomerRequest.get(`/order/${data}`)
+export const apiCustomerGetOrder = data => DefaultRequest.get(`/order/${data}`)
 
-export const apiCustomerPayOrder = data =>
-  CustomerRequest.post(`/order/${data}`)
+export const apiCustomerPayOrder = data => DefaultRequest.post(`/pay/${data}`)
 
 export const apiCustomerGetProduct = data =>
-  CustomerRequest.get(`/product/${data}`)
+  DefaultRequest.get(`/product/${data}`)
 
 export const apiCustomerRemoveCart = data =>
-  CustomerRequest.delete(`/cart/${data}`)
+  DefaultRequest.delete(`/cart/${data}`)
 
 export const apiCustomerAddCouponCode = data =>
-  CustomerRequest.post(`/coupon`, data)
+  DefaultRequest.post(`/coupon`, data)
 
 export const apiCustomerCreateOrder = data =>
-  CustomerRequest.post(`/order`, data)
+  DefaultRequest.post(`/order`, data)
 
 // store / customer
 
-export const apiGetCart = () => CustomerRequest.get(`/cart`)
+export const apiGetCart = () => DefaultRequest.get(`/cart`)
 
-export const apiAddToCart = data => CustomerRequest.post(`/cart`, data)
+export const apiAddToCart = data => DefaultRequest.post(`/cart`, data)
 
-export const getProductsAll = () => CustomerRequest.get(`/products/all`)
+export const getProductsAll = () => DefaultRequest.get(`/products/all`)
+
+DefaultRequest.interceptors.request.use(
+  config => {
+    store.dispatch("setLoading", true)
+    return config
+  },
+  error => {
+    return Promise.reject(error)
+  }
+)
+
+DefaultRequest.interceptors.response.use(
+  response => {
+    store.dispatch("setLoading", false)
+    return response
+  },
+  error => {
+    store.dispatch("setLoading", false)
+    return Promise.reject(error)
+  }
+)

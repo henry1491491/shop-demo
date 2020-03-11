@@ -105,13 +105,6 @@
       </template>
     </b-modal>
 
-    <content-loader-table
-      :loading.sync="isLoading"
-      :width="contentLoaderOptions.width"
-      :height="contentLoaderOptions.height"
-      :speed="contentLoaderOptions.speed"
-    />
-
     <b-table
       v-if="!isLoading"
       :items="coupons"
@@ -170,11 +163,6 @@ export default {
   name: "TheDashboardCoupons",
   data() {
     return {
-      contentLoaderOptions: {
-        width: 850,
-        height: 430,
-        speed: 2
-      },
       coupons: [],
       fields: [
         {

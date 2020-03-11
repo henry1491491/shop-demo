@@ -1,8 +1,11 @@
 <template>
   <div id="views-thecustomer_content">
-    <div class="d-flex justify-content-between align-items-center">
-      <h4 v-show="sortTitle === 'all'">全部</h4>
-      <h4 v-show="sortTitle !== 'all'">
+    <div
+      v-if="$route.path === '/'"
+      class="d-flex justify-content-between align-items-center"
+    >
+      <h4 v-show="sortTitle === '全部'">全部</h4>
+      <h4 v-show="sortTitle !== '全部'">
         {{sortTitle}}
       </h4>
       <b-form-select
@@ -14,30 +17,54 @@
       />
     </div>
 
-    <b-form-row>
+    <b-row v-if="$route.path === '/'">
       <b-col
         v-for="item in filterProducts"
         :key="item.id"
-        cols="12"
-        xs="6"
-        sm="6"
-        md="6"
-        lg="3"
+        class="p-0"
+        cols="4"
+        sm="3"
+        lg="2"
       >
         <base-card-products
+          :favorList="favorList"
           :item="item"
-          :favorArray="favorArray"
           :status="status"
-          @add-to-favorite-list="addToFavoriteList"
-          @get-product="getProduct"
           @add-to-cart="addToCart"
+          @get-product="getProduct"
           @go-to-shopping-cart="goToShoppingCart"
+          @set-favor-title="setFavorItem"
         />
       </b-col>
-    </b-form-row>
+    </b-row>
 
-    <div v-show="!filterProducts.length">
+    <b-row v-else-if="$route.path === '/favor'">
+      <b-col
+        v-for="item in favorProducts"
+        :key="item.id"
+        class="p-0"
+        cols="4"
+        sm="3"
+        lg="2"
+      >
+        <base-card-products
+          :favorList="favorList"
+          :item="item"
+          :status="status"
+          @add-to-cart="addToCart"
+          @get-product="getProduct"
+          @go-to-shopping-cart="goToShoppingCart"
+          @set-favor-title="setFavorItem"
+        />
+      </b-col>
+    </b-row>
+
+    <div v-show="!filterProducts.length && $route.path === '/'">
       <base-card-empty cardText="目前還沒有符合的商品喔!" />
+    </div>
+
+    <div v-show="!favorProducts.length && $route.path === '/favor'">
+      <base-card-empty cardText="心願清單沒有東西喔！" />
     </div>
 
     <!-- modal -->
@@ -118,8 +145,8 @@ export default {
         { text: "選購 9 件", value: 9 },
         { text: "選購 10 件", value: 10 }
       ],
+      favorList: [],
       product: {},
-      products: [],
       sortSelected: null,
       sortOptions: [
         { value: null, text: "價格" },
@@ -129,13 +156,30 @@ export default {
     }
   },
   computed: {
-    favorArray: {
+    favorProducts() {
+      const isArray = (fList, pAry) => {
+        let result = []
+        for (let i = 0; i < fList.length; i++) {
+          let item = pAry.filter(el => el.title === fList[i])
+          result = result.concat(item)
+        }
+        return result
+      }
+      return isArray(this.favorList, this.productsAll)
+    },
+    filterProducts: {
       get() {
-        return this.$store.state.customer.favorArray
+        return this.$store.state.customer.filterProducts
       },
       set(val) {
-        this.$store.commit("customer/SET_TO_FAVORLIST", val)
+        this.$store.commit("customer/UPDATE_FILTER_PRODUCTS", val)
       }
+    },
+    productsAll() {
+      return this.$store.state.customer.productsAll
+    },
+    sortTitle() {
+      return this.$store.state.customer.sortTitle
     },
     status: {
       get() {
@@ -144,26 +188,56 @@ export default {
       set(val) {
         this.$store.commit("customer/SET_STATUS_LOADINGITEM", val)
       }
-    },
-    productsAll() {
-      return this.$store.state.customer.productsAll
-    },
-    filterProducts: {
-      get() {
-        return this.$store.state.customer.filterProducts
-      },
-      set(val) {
-        this.$store.commit("customer/UPDATE_FILTERPRODUCTS", val)
-      }
-    },
-    sortTitle() {
-      return this.$store.state.customer.sortTitle
     }
   },
   mounted() {
-    this.$store.commit("customer/GET_FAVORLIST")
+    this.getFavorTitleList()
   },
   methods: {
+    addToCart(id, qty = 1) {
+      this.$store.dispatch("customer/addToCart", { id, qty: 1 })
+      this.$refs["show-product-modal"].hide()
+    },
+    getFavorTitleList() {
+      this.favorList = JSON.parse(localStorage.getItem("favorItem")) || []
+    },
+    async getProduct(id) {
+      //this.$store.commit("customer/SET_STATUS_LOADINGITEM", id)
+      let response = await apiCustomerGetProduct(id)
+      if (!response.data.success) return
+      response.data.product.num = null
+      this.product = response.data.product
+      this.$refs["show-product-modal"].show()
+      //this.$store.commit("customer/SET_STATUS_LOADINGITEM", "")
+    },
+    goToShoppingCart() {
+      this.$router.push("/customer_carts")
+    },
+    setFavorItem(item) {
+      const setTitleToStorage = () => {
+        localStorage.setItem("favorItem", JSON.stringify(this.favorList))
+        this.getFavorTitleList()
+      }
+      const isFavored = el => el === item.title
+      if (
+        this.favorList.length === 0 ||
+        this.favorList.some(isFavored) === false
+      ) {
+        this.favorList.push(item.title)
+        setTitleToStorage()
+      } else {
+        let favorIndex = this.favorList.findIndex(isFavored)
+        this.favorList.splice(favorIndex, 1)
+        setTitleToStorage()
+      }
+    },
+    sortByPrice(item) {
+      if (item === "hign") {
+        this.$store.commit("customer/SET_FILTER_PRODUCTS_BY_SORT", "hign")
+      } else if (item === "low") {
+        this.$store.commit("customer/SET_FILTER_PRODUCTS_BY_SORT", "low")
+      }
+    }
     /*
     getProducts(page = 1) {
       const api = `/products?page=${page}`
@@ -173,32 +247,6 @@ export default {
       })
     },
     */
-    sortByPrice(item) {
-      if (item === "hign") {
-        this.$store.commit("customer/SET_FILTERPRODUCTS_BY_SORT", "hign")
-      } else if (item === "low") {
-        this.$store.commit("customer/SET_FILTERPRODUCTS_BY_SORT", "low")
-      }
-    },
-    addToFavoriteList(item) {
-      this.$store.commit("customer/SET_TO_FAVORLIST", item)
-    },
-    getProduct(id) {
-      this.$store.commit("customer/SET_STATUS_LOADINGITEM", id)
-      apiCustomerGetProduct(id).then(response => {
-        response.data.product.num = null
-        this.product = response.data.product
-        this.$refs["show-product-modal"].show()
-        this.$store.commit("customer/SET_STATUS_LOADINGITEM", "")
-      })
-    },
-    addToCart(id, qty = 1) {
-      this.$store.dispatch("customer/addToCart", { id, qty: 1 })
-      this.$refs["show-product-modal"].hide()
-    },
-    goToShoppingCart() {
-      this.$router.push("/customer/customer_carts")
-    }
   }
 }
 </script>

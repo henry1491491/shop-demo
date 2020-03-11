@@ -1,4 +1,3 @@
-import axios from "axios"
 import { apiGetCart, apiAddToCart, getProductsAll } from "../../plugins/axios"
 
 export default {
@@ -6,9 +5,9 @@ export default {
   state: {
     carts: [],
     cartsTotal: {},
-    category: "all",
-    favorArray: [],
+    categories: [],
     filterProducts: [],
+    order: {},
     priceZone: [],
     productsAll: [],
     sortTitle: "全部",
@@ -17,46 +16,24 @@ export default {
     }
   },
   mutations: {
-    GET_FAVORLIST(state) {
-      state.favorArray = JSON.parse(localStorage.getItem("favorItem")) || []
-    },
-    SET_PRODUCTS_ALL(state, items) {
-      state.productsAll = items
-    },
-    SET_STATUS_LOADINGITEM(state, id) {
-      state.status.loadingItem = id
-    },
-    SET_SORTTITLE(state, item) {
-      state.sortTitle = item
-    },
     SET_CARTS(state, items) {
       state.carts = items
     },
-    SET_CARTSTOTAL(state, item) {
+    SET_CARTS_TOTAL(state, item) {
       state.cartsTotal = item
     },
-    SET_TO_FAVORLIST(state, item) {
-      const isFavor = el => el === item.title
-      //let favorStorage = JSON.parse(localStorage.getItem("favorItem")) || []
-      // favorArray 沒有東西
-      if (
-        state.favorArray.length === 0 ||
-        state.favorArray.some(isFavor) === false
-      ) {
-        if (item.title === null) return
-        state.favorArray.push(item.title)
-        localStorage.setItem("favorItem", JSON.stringify(state.favorArray))
-        //favorStorage = JSON.parse(localStorage.getItem("favorItem")) || []
-        state.favorArray = JSON.parse(localStorage.getItem("favorItem")) || []
-      } else {
-        let favorIndex = state.favorArray.findIndex(isFavor)
-        state.favorArray.splice(favorIndex, 1)
-        localStorage.setItem("favorItem", JSON.stringify(state.favorArray))
-        //favorStorage = JSON.parse(localStorage.getItem("favorItem")) || []
-        state.favorArray = JSON.parse(localStorage.getItem("favorItem")) || []
-      }
+    SET_CATEGORIES(state) {
+      if (!state.productsAll) return
+      const setArray = Array.from(
+        new Set(state.productsAll.map(el => el.category))
+      )
+      setArray.splice(0, 0, "全部")
+      state.categories = setArray
     },
-    SET_FILTERPRODUCTS_BY_SORT(state, item) {
+    SET_FILTER_PRODUCTS(state) {
+      state.filterProducts = state.productsAll
+    },
+    SET_FILTER_PRODUCTS_BY_SORT(state, item) {
       if (item === "hign") {
         state.filterProducts.sort((a, b) => {
           return b.price - a.price
@@ -67,7 +44,19 @@ export default {
         })
       }
     },
-    UPDATE_FILTERPRODUCTS(state, item) {
+    SET_PRODUCTS_ALL(state, item) {
+      state.productsAll = item
+    },
+    SET_SORT_TITLE(state, item) {
+      state.sortTitle = item
+    },
+    SET_STATUS_LOADINGITEM(state, id) {
+      state.status.loadingItem = id
+    },
+    SET_ORDER(state, item) {
+      state.order = item
+    },
+    UPDATE_FILTER_PRODUCTS(state, item) {
       state.filterProducts = item
     }
   },
@@ -86,17 +75,21 @@ export default {
     getCart({ commit }) {
       apiGetCart().then(response => {
         commit("SET_CARTS", response.data.data.carts)
-        commit("SET_CARTSTOTAL", {
+        commit("SET_CARTS_TOTAL", {
           total: response.data.data.total,
           final_total: response.data.data.final_total
         })
       })
     },
-    getProductsAll({ commit }) {
-      getProductsAll().then(response => {
-        commit("SET_PRODUCTS_ALL", response.data.products)
-        commit("UPDATE_FILTERPRODUCTS", response.data.products)
-      })
+    async getProductsAll({ dispatch }) {
+      let response = await getProductsAll()
+      if (!response.data.success) return
+      dispatch("initialize", response.data.products)
+    },
+    async initialize({ commit }, data) {
+      commit("SET_PRODUCTS_ALL", data)
+      commit("SET_FILTER_PRODUCTS", data)
+      commit("SET_CATEGORIES")
     }
   }
 }
