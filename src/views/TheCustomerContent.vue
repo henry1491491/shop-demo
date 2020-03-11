@@ -66,7 +66,6 @@
     <div v-show="!favorProducts.length && $route.path === '/favor'">
       <base-card-empty cardText="心願清單沒有東西喔！" />
     </div>
-
     <!-- modal -->
     <b-modal
       ref="show-product-modal"
