@@ -259,13 +259,13 @@ export default {
     async getOrders(page = 1) {
       this.loading = true
       let response = await apiAdminGetOrders(page)
-      if (!reponse.data.message) return
+      if (!reponse.data.success) return
       this.loading = false
       this.orders = response.data.orders
       this.pagination = response.data.pagination
     },
     async updateOrder() {
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/order`
+      let api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/order`
       let httpMethod = "post"
       if (!this.isNew) {
         api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/product/${this.tempOrder.id}`
@@ -276,7 +276,7 @@ export default {
         this.$refs["edit-order-modal"].hide()
         this.getOrders()
         this.$store.dispatch("alert/setMsgsAlert", {
-          msg: response.data.messages,
+          msg: response.data.message,
           variant: "danger",
           id: Math.floor(new Date() / 1000)
         })
@@ -284,7 +284,7 @@ export default {
         this.$refs["edit-order-modal"].hide()
         this.getOrders()
         this.$store.dispatch("alert/setMsgsAlert", {
-          msg: response.data.messages,
+          msg: response.data.message,
           variant: "primary",
           id: Math.floor(new Date() / 1000)
         })

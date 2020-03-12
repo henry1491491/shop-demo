@@ -322,13 +322,13 @@ export default {
       if (!response.data.success) return
       this.getProducts()
       this.$store.dispatch("alert/setMsgsAlert", {
-        msg: response.data.messages,
+        msg: response.data.message,
         variant: "warning",
         id: Math.floor(new Date() / 1000)
       })
     },
     async updateProduct() {
-      const api = `/admin/product`
+      let api = `/admin/product`
       let httpMethod = "post"
       if (!this.isNew) {
         api = `/admin/product/${this.tempProduct.id}`
@@ -340,16 +340,18 @@ export default {
       if (!response.data.success) {
         this.$refs["edit-product-modal"].hide()
         this.getProducts(this.pagination.current_page)
+
         this.$store.dispatch("alert/setMsgsAlert", {
-          msg: response.data.messages,
+          msg: response.data.message,
           variant: "danger",
           id: Math.floor(new Date() / 1000)
         })
       } else {
         this.$refs["edit-product-modal"].hide()
         this.getProducts(this.pagination.current_page)
+        console.log(response)
         this.$store.dispatch("alert/setMsgsAlert", {
-          msg: response.data.messages,
+          msg: response.data.message,
           variant: "primary",
           id: Math.floor(new Date() / 1000)
         })

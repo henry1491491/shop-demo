@@ -231,9 +231,14 @@ export default {
       let response = await apiAdminDeleteCoupons(item)
       if (!response.data.success) return
       this.getCoupons()
+      this.$store.dispatch("alert/setMsgsAlert", {
+        msg: response.data.messages,
+        variant: "danger",
+        id: Math.floor(new Date() / 1000)
+      })
     },
     async updateCoupon() {
-      const api = `/admin/coupon`
+      let api = `/admin/coupon`
       let httpMethod = "post"
       if (!this.isNew) {
         api = `/admin/coupon/${this.tempCoupon.id}`
@@ -245,10 +250,19 @@ export default {
       if (!response.data.success) {
         this.$refs["edit-coupon-modal"].hide()
         this.getCoupons()
-        console.log("新增失敗")
+        this.$store.dispatch("alert/setMsgsAlert", {
+          msg: response.data.message,
+          variant: "danger",
+          id: Math.floor(new Date() / 1000)
+        })
       } else {
         this.$refs["edit-coupon-modal"].hide()
         this.getCoupons()
+        this.$store.dispatch("alert/setMsgsAlert", {
+          msg: response.data.message,
+          variant: "primary",
+          id: Math.floor(new Date() / 1000)
+        })
       }
     },
     async getCoupons(page = 1) {
