@@ -9,7 +9,6 @@
       @filter-handler="filterHandler"
       @remove-conditions="removeConditions"
     />
-
   </div>
 </template>
 
@@ -59,6 +58,11 @@ export default {
       this.priceRadiosSelected = ""
       this.$store.commit("customer/SET_SORT_TITLE", "全部")
       this.filteredData(this.productsAll)
+      this.$store.dispatch("alert/setMsgsAlert", {
+        msg: "已清除篩選",
+        variant: "primary",
+        id: Math.floor(new Date() / 1000)
+      })
     },
     filterHandler(item) {
       if (item.type === "category" && item.value === "全部") {

@@ -24,7 +24,7 @@
           <b-link
             class="base-card-text-title text-secondary h5"
             variant="link"
-            @click.stop="getProduct(item.id)"
+            @click="getProduct(item.id)"
           >
             {{item.title}}
           </b-link>

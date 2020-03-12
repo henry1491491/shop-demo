@@ -2,11 +2,13 @@
 @import "./components/baseCardProducts";
 
 // views
+@import "./views/app.scss";
 @import "./views/theLogin";
 @import "./views/theDashboard";
 @import "./views/theCustomerNavbar";
 @import "./views/theCustomerCheckout";
 @import "./views/theCustomerContent";
+@import "./views/theCustomerContentProductDetail";
 @import "./views/theCustomerFooter";
 @import "./views/theCustomerShoppingCartContent";
 @import "./views/theCustomerShoppingCartForm";

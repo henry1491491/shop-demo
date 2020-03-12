@@ -61,16 +61,21 @@ export default {
     }
   },
   actions: {
-    addToCart({ commit, dispatch }, item) {
+    async addToCart({ commit, dispatch }, item) {
       commit("SET_STATUS_LOADINGITEM", item.id)
       const cart = {
         product_id: item.id,
         qty: item.qty
       }
-      apiAddToCart({ data: cart }).then(() => {
-        commit("SET_STATUS_LOADINGITEM", "")
-        dispatch("getCart")
-      })
+      let response = await apiAddToCart({ data: cart })
+      if (!response.data.success) return
+      commit("SET_STATUS_LOADINGITEM", "")
+      dispatch("getCart")
+      return {
+        msg: response.data.message,
+        variant: "primary",
+        id: Math.floor(new Date() / 1000)
+      }
     },
     async getCart({ commit }) {
       try {

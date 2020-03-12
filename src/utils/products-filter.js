@@ -26,6 +26,7 @@ Vue.prototype.$productsFilter = {
         for (let choice of chooses) {
           tmpProducts = tmpProducts.concat(
             products.filter(item => {
+              if (item[choice.type] === undefined) return
               return item[choice.type].indexOf(choice.value) !== -1
             })
           )

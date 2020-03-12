@@ -59,11 +59,11 @@
       </b-col>
     </b-row>
 
-    <div v-show="!filterProducts.length && $route.path === '/'">
+    <div v-if="filterProducts.length === 0 && $route.path === '/'">
       <base-card-empty cardText="目前還沒有符合的商品喔!" />
     </div>
 
-    <div v-show="!favorProducts.length && $route.path === '/favor'">
+    <div v-if="favorProducts.length === 0  && $route.path === '/favor'">
       <base-card-empty cardText="心願清單沒有東西喔！" />
     </div>
     <!-- modal -->
@@ -104,6 +104,7 @@
           >
             小記{{product.price * product.num}}元
           </div>
+
           <b-button
             class="float-right"
             size="sm"
@@ -118,6 +119,14 @@
               variant="secondary"
             />
             加到購物車
+          </b-button>
+          <b-button
+            class="float-right mr-2"
+            size="sm"
+            variant="outline-secondary"
+            @click="goToProductDetail(product.id)"
+          >
+            查看更多
           </b-button>
         </div>
       </template>
@@ -148,6 +157,8 @@ export default {
       ],
       favorList: [],
       product: {},
+      showEmptyCardProducts: false,
+      showEmptyCardFavor: false,
       sortSelected: null,
       sortOptions: [
         { value: null, text: "價格" },
@@ -195,9 +206,14 @@ export default {
     this.getFavorTitleList()
   },
   methods: {
-    addToCart(id, qty = 1) {
-      this.$store.dispatch("customer/addToCart", { id, qty: 1 })
+    async addToCart(id, qty = 1) {
+      let result = await this.$store.dispatch("customer/addToCart", {
+        id,
+        qty: 1
+      })
+      if (!result.msg) return
       this.$refs["show-product-modal"].hide()
+      this.$store.dispatch("alert/setMsgsAlert", result)
     },
     getFavorTitleList() {
       this.favorList = JSON.parse(localStorage.getItem("favorItem")) || []
@@ -210,6 +226,9 @@ export default {
       this.product = response.data.product
       this.$refs["show-product-modal"].show()
       //this.$store.commit("customer/SET_STATUS_LOADINGITEM", "")
+    },
+    goToProductDetail(id) {
+      this.$router.push({ path: `/detail/${id}` })
     },
     goToShoppingCart() {
       this.$router.push("/customer_carts")
@@ -226,10 +245,20 @@ export default {
       ) {
         this.favorList.push(item.title)
         setTitleToStorage()
+        this.$store.dispatch("alert/setMsgsAlert", {
+          msg: "已加入",
+          variant: "primary",
+          id: Math.floor(new Date() / 1000)
+        })
       } else {
         let favorIndex = this.favorList.findIndex(isFavored)
         this.favorList.splice(favorIndex, 1)
         setTitleToStorage()
+        this.$store.dispatch("alert/setMsgsAlert", {
+          msg: "已移除",
+          variant: "warning",
+          id: Math.floor(new Date() / 1000)
+        })
       }
     },
     sortByPrice(item) {

@@ -103,7 +103,13 @@
       </div>
     </div>
 
-    <div v-else>
+    <v-skeleton-loader
+      v-else
+      class="mx-auto"
+      type="table"
+    />
+
+    <div v-if="showEmptyCard">
       <b-card>
         <b-card-text class="text-center">
           購物車沒有東西喔！
@@ -148,7 +154,8 @@ export default {
         { key: "qty", label: "數量" },
         { key: "price", label: "單價" }
       ],
-      coupon_code: ""
+      coupon_code: "",
+      showEmptyCard: false
     }
   },
   computed: {
@@ -168,16 +175,15 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch("customer/getCart")
+    this.getCart()
   },
   methods: {
-    async removeCart(id) {
-      this.$store.commit("customer/SET_STATUS_LOADINGITEM", id)
-      let response = await apiCustomerRemoveCart(id)
-      if (!response.data.success) return
-      response = await this.$store.dispatch("customer/getCart")
-      if (!response.status) return
-      this.$store.commit("customer/SET_STATUS_LOADINGITEM", "")
+    async getCart() {
+      let result = await this.$store.dispatch("customer/getCart")
+      if (!result.status) return
+      if (!this.carts.length) {
+        this.showEmptyCard = true
+      }
     },
     async addCouponCode() {
       const coupon = {
@@ -185,7 +191,26 @@ export default {
       }
       let response = await apiCustomerAddCouponCode({ data: coupon })
       if (!response.data.success) return
-      this.$store.dispatch("customer/getCart")
+      let result = await this.$store.dispatch("customer/getCart")
+      if (!result.status) return
+      this.$store.dispatch("alert/setMsgsAlert", {
+        msg: "已輸入優惠碼",
+        variant: "primary",
+        id: Math.floor(new Date() / 1000)
+      })
+    },
+    async removeCart(id) {
+      this.$store.commit("customer/SET_STATUS_LOADINGITEM", id)
+      let response = await apiCustomerRemoveCart(id)
+      if (!response.data.success) return
+      response = await this.$store.dispatch("customer/getCart")
+      if (!response.status) return
+      this.$store.commit("customer/SET_STATUS_LOADINGITEM", "")
+      this.$store.dispatch("alert/setMsgsAlert", {
+        msg: "已刪除",
+        variant: "danger",
+        id: Math.floor(new Date() / 1000)
+      })
     }
   }
 }

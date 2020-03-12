@@ -138,6 +138,11 @@ export default {
     async payOrder() {
       let response = await apiCustomerPayOrder(this.orderId)
       if (!response.data.success) return
+      let result = await this.$store.dispatch(
+        "alert/setMsgsAlert",
+        response.data.message
+      )
+      if (!result.status) return
       this.getOrder()
     }
   }

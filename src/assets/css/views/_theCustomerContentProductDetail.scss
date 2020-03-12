@@ -1,0 +1,16 @@
+#views-thecustomer_contentproductdetail {
+  .img-left-card {
+    img {
+      width: 50%;
+    }
+  }
+
+  .coupon-button-left {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .coupon-button-right {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}

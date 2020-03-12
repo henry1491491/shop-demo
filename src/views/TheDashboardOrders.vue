@@ -256,31 +256,39 @@ export default {
     cancerEditOrder() {
       this.$refs["edit-order-modal"].hide()
     },
-    getOrders(page = 1) {
+    async getOrders(page = 1) {
       this.loading = true
-      apiAdminGetOrders(page).then(response => {
-        this.loading = false
-        this.orders = response.data.orders
-        this.pagination = response.data.pagination
-      })
+      let response = await apiAdminGetOrders(page)
+      if (!reponse.data.message) return
+      this.loading = false
+      this.orders = response.data.orders
+      this.pagination = response.data.pagination
     },
-    updateOrder() {
-      let api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/order`
+    async updateOrder() {
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/order`
       let httpMethod = "post"
       if (!this.isNew) {
         api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/product/${this.tempOrder.id}`
         httpMethod = "put"
       }
-      this.axios[httpMethod](api, { data: this.tempOrder }).then(response => {
-        if (response.data.success) {
-          this.$refs["edit-order-modal"].hide()
-          this.getOrders()
-        } else {
-          this.$refs["edit-order-modal"].hide()
-          this.getOrders()
-          console.log("新增失敗")
-        }
-      })
+      let response = await this.axios[httpMethod](api, { data: this.tempOrder })
+      if (!response.data.success) {
+        this.$refs["edit-order-modal"].hide()
+        this.getOrders()
+        this.$store.dispatch("alert/setMsgsAlert", {
+          msg: response.data.messages,
+          variant: "danger",
+          id: Math.floor(new Date() / 1000)
+        })
+      } else {
+        this.$refs["edit-order-modal"].hide()
+        this.getOrders()
+        this.$store.dispatch("alert/setMsgsAlert", {
+          msg: response.data.messages,
+          variant: "primary",
+          id: Math.floor(new Date() / 1000)
+        })
+      }
     }
   }
 }

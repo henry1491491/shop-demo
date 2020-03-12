@@ -227,36 +227,37 @@ export default {
     cancerEditCoupon() {
       this.$refs["edit-coupon-modal"].hide()
     },
-    deleteCoupon(item) {
-      apiAdminDeleteCoupons(item).then(response => {
-        this.getCoupons()
-      })
+    async deleteCoupon(item) {
+      let response = await apiAdminDeleteCoupons(item)
+      if (!response.data.success) return
+      this.getCoupons()
     },
-    updateCoupon() {
-      let api = `/admin/coupon`
+    async updateCoupon() {
+      const api = `/admin/coupon`
       let httpMethod = "post"
       if (!this.isNew) {
         api = `/admin/coupon/${this.tempCoupon.id}`
         httpMethod = "put"
       }
-      this.axios[httpMethod](api, { data: this.tempCoupon }).then(response => {
-        if (response.data.success) {
-          this.$refs["edit-coupon-modal"].hide()
-          this.getCoupons()
-        } else {
-          this.$refs["edit-coupon-modal"].hide()
-          this.getCoupons()
-          console.log("新增失敗")
-        }
+      let response = await this.axios[httpMethod](api, {
+        data: this.tempCoupon
       })
+      if (!response.data.success) {
+        this.$refs["edit-coupon-modal"].hide()
+        this.getCoupons()
+        console.log("新增失敗")
+      } else {
+        this.$refs["edit-coupon-modal"].hide()
+        this.getCoupons()
+      }
     },
-    getCoupons(page = 1) {
+    async getCoupons(page = 1) {
       this.loading = true
-      apiAdminGetCoupons(page).then(response => {
-        this.loading = false
-        this.coupons = response.data.coupons
-        this.pagination = response.data.pagination
-      })
+      let response = await apiAdminGetCoupons(page)
+      if (!response.data.success) return
+      this.loading = false
+      this.coupons = response.data.coupons
+      this.pagination = response.data.pagination
     }
   }
 }

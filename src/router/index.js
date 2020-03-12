@@ -11,6 +11,7 @@ import TheDashboardCoupons from "../views/TheDashboardCoupons.vue"
 import TheCustomer from "../views/TheCustomer.vue"
 import TheCustomerCheckout from "../views/TheCustomerCheckout.vue"
 import TheCustomerContent from "../views/TheCustomerContent.vue"
+import TheCustomerContentProductDetail from "../views/TheCustomerContent.vue"
 import TheCustomerShoppingCartContent from "../views/TheCustomerShoppingCartContent"
 import TheCustomerShoppingCartForm from "../views/TheCustomerShoppingCartForm.vue"
 
@@ -62,22 +63,27 @@ const routes = [
         component: TheCustomerContent
       },
       {
+        path: "detail/:productId",
+        name: "TheCustomerContentProductDetail",
+        component: TheCustomerContentProductDetail
+      },
+      {
         path: "favor",
         name: "TheCustomerContent",
         component: TheCustomerContent
       },
       {
-        path: "/customer_carts",
+        path: "customer_carts",
         name: "TheCustomerShoppingCartContent",
         component: TheCustomerShoppingCartContent
       },
       {
-        path: "/customer_carts_form",
+        path: "customer_carts_form",
         name: "TheCustomerShoppingCartForm",
         component: TheCustomerShoppingCartForm
       },
       {
-        path: "/customer_checkout/:orderId",
+        path: "customer_checkout/:orderId",
         name: "TheCustomerCheckout",
         component: TheCustomerCheckout
       }

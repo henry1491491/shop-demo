@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node index.js",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build"
   },
@@ -29,7 +28,9 @@
     "fibers": "^4.0.2",
     "sass": "^1.26.2",
     "sass-loader": "^8.0.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
   },
   "browserslist": [
     "> 1%",

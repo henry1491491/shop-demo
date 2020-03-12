@@ -317,50 +317,63 @@ export default {
     cancerEditProduct() {
       this.$refs["edit-product-modal"].hide()
     },
-    deleteProduct(item) {
-      apiAdminDeleteProduct(item).then(response => {
-        this.getProducts()
+    async deleteProduct(item) {
+      let response = await apiAdminDeleteProduct(item)
+      if (!response.data.success) return
+      this.getProducts()
+      this.$store.dispatch("alert/setMsgsAlert", {
+        msg: response.data.messages,
+        variant: "warning",
+        id: Math.floor(new Date() / 1000)
       })
     },
-    updateProduct() {
-      let api = `/admin/product`
+    async updateProduct() {
+      const api = `/admin/product`
       let httpMethod = "post"
       if (!this.isNew) {
         api = `/admin/product/${this.tempProduct.id}`
         httpMethod = "put"
       }
-      this.axios[httpMethod](api, { data: this.tempProduct }).then(response => {
-        if (response.data.success) {
-          this.$refs["edit-product-modal"].hide()
-          this.getProducts(this.pagination.current_page)
-        } else {
-          this.$refs["edit-product-modal"].hide()
-          this.getProducts(this.pagination.current_page)
-          console.log("新增失敗")
-        }
+      let response = await this.axios[httpMethod](api, {
+        data: this.tempProduct
       })
+      if (!response.data.success) {
+        this.$refs["edit-product-modal"].hide()
+        this.getProducts(this.pagination.current_page)
+        this.$store.dispatch("alert/setMsgsAlert", {
+          msg: response.data.messages,
+          variant: "danger",
+          id: Math.floor(new Date() / 1000)
+        })
+      } else {
+        this.$refs["edit-product-modal"].hide()
+        this.getProducts(this.pagination.current_page)
+        this.$store.dispatch("alert/setMsgsAlert", {
+          msg: response.data.messages,
+          variant: "primary",
+          id: Math.floor(new Date() / 1000)
+        })
+      }
     },
-    uploadFile() {
+    async uploadFile() {
       const uploadedFile = this.$refs["file-input"].$refs.input.files[0]
       const formData = new FormData()
       formData.append("file-to-upload", uploadedFile)
-      apiAdminUploadFile(formData, {
+      let response = await apiAdminUploadFile(formData, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
-      }).then(response => {
-        if (response.data.success) {
-          this.$set(this.tempProduct, "imageUrl", response.data.imageUrl)
-        }
       })
+      if (!response.data.success) return
+      this.$set(this.tempProduct, "imageUrl", response.data.imageUrl)
     },
-    getProducts(page = 1) {
+    async getProducts(page = 1) {
       //this.loading = true
-      apiAdminGetProducts(page).then(response => {
-        //this.loading = false
-        this.products = response.data.products
-        this.pagination = response.data.pagination
-      })
+      let response = await apiAdminGetProducts(page)
+      if (!response.data.success) return
+      //this.loading = false
+      this.products = response.data.products
+      this.pagination = response.data.pagination
     }
   }
 }

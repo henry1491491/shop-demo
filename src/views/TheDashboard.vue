@@ -118,11 +118,10 @@ export default {
     }
   },
   methods: {
-    signOut() {
-      apiLogLogout().then(response => {
-        if (!response.data.success) return
-        this.$router.push("/login")
-      })
+    async signOut() {
+      let response = await apiLogLogout()
+      if (!response.data.success) return
+      this.$router.push("/login")
     }
   }
 }

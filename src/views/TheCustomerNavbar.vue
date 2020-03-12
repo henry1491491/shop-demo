@@ -1,7 +1,7 @@
 <template>
   <div id="views-thecustomer_navbar">
     <base-navbar
-      v-show="$route.path === '/'"
+      v-show="$route.path === '/' || $route.name === 'TheCustomerContentProductDetail'"
       navbarHref="/"
       navbarTitle="Orchids 蘭花購物網"
     >
@@ -63,19 +63,6 @@
               variant="secondary"
             >
               心願清單
-            </b-tooltip>
-          </b-nav-item>
-
-          <b-nav-item>
-            <ticket-percent
-              id="ticket-percent"
-              class="text-secondary"
-            />
-            <b-tooltip
-              target="ticket-percent"
-              variant="secondary"
-            >
-              優惠券
             </b-tooltip>
           </b-nav-item>
 
@@ -334,6 +321,11 @@ export default {
       response = await this.$store.dispatch("customer/getCart")
       if (!response.status) return
       this.$store.commit("customer/SET_STATUS_LOADINGITEM", "")
+      this.$store.dispatch("alert/setMsgsAlert", {
+        msg: "已刪除",
+        variant: "danger",
+        id: Math.floor(new Date() / 1000)
+      })
     },
     showCarts() {
       this.$refs["show-cart-modal"].show()

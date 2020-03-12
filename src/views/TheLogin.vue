@@ -93,10 +93,14 @@ export default {
     getValidationState({ dirty, validated, valid = null }) {
       return dirty || validated ? valid : null
     },
-    signIn() {
-      apiLogLogin(this.user).then(response => {
-        if (!response.data.success) return
-        this.$router.push("/admin/products")
+    async signIn() {
+      let response = await apiLogLogin(this.user)
+      if (!response.data.success) return
+      this.$router.push("/admin/products")
+      this.$store.dispatch("alert/setMsgsAlert", {
+        msg: response.data.messages,
+        variant: "primary",
+        id: Math.floor(new Date() / 1000)
       })
     }
   }

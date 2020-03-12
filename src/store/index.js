@@ -1,5 +1,6 @@
 import Vue from "vue"
 import Vuex from "vuex"
+import alertModules from "./modules/alert"
 import customerModules from "./modules/customer"
 
 Vue.use(Vuex)
@@ -8,7 +9,7 @@ export default new Vuex.Store({
   strict: true,
   state: {
     loadingAmount: 0,
-    messages:[]
+    messages: []
   },
   mutations: {
     SET_LOADING: (state, isLoading) => {
@@ -21,6 +22,7 @@ export default new Vuex.Store({
     }
   },
   modules: {
-    customer: customerModules
+    customer: customerModules,
+    alert: alertModules
   }
 })
