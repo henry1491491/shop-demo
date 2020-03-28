@@ -1,136 +1,147 @@
 <template>
   <div id="views-thecustomer_content">
-    <div
-      v-if="$route.path === '/'"
-      class="d-flex justify-content-between align-items-center"
-    >
-      <h4 v-show="sortTitle === '全部'">全部</h4>
-      <h4 v-show="sortTitle !== '全部'">
-        {{sortTitle}}
-      </h4>
-      <b-form-select
-        v-model="sortSelected"
-        :options="sortOptions"
-        class="sort-form"
-        size="sm"
-        @change="sortByPrice(sortSelected)"
-      />
-    </div>
-
-    <b-row v-if="$route.path === '/'">
-      <b-col
-        v-for="item in filterProducts"
-        :key="item.id"
-        class="p-0"
-        cols="4"
-        sm="3"
-        lg="2"
-      >
-        <base-card-products
-          :favorList="favorList"
-          :item="item"
-          :status="status"
-          @add-to-cart="addToCart"
-          @get-product="getProduct"
-          @go-to-shopping-cart="goToShoppingCart"
-          @set-favor-title="setFavorItem"
+    <b-row>
+      <b-col md="2">
+        <base-sidebar
+          :categories="categories"
+          :priceRadiosOptions="priceRadiosOptions"
+          :priceRadiosSelected="priceRadiosSelected"
+          :sortTitle="sortTitle"
+          @filter-handler="filterHandler"
+          @remove-conditions="removeConditions"
         />
       </b-col>
-    </b-row>
-
-    <b-row v-else-if="$route.path === '/favor'">
       <b-col
-        v-for="item in favorProducts"
-        :key="item.id"
-        class="p-0"
-        cols="4"
-        sm="3"
-        lg="2"
+        v-if="!isLoading"
+        md="10"
       >
-        <base-card-products
-          :favorList="favorList"
-          :item="item"
-          :status="status"
-          @add-to-cart="addToCart"
-          @get-product="getProduct"
-          @go-to-shopping-cart="goToShoppingCart"
-          @set-favor-title="setFavorItem"
-        />
-      </b-col>
-    </b-row>
-
-    <div v-if="filterProducts.length === 0 && $route.path === '/'">
-      <base-card-empty cardText="目前還沒有符合的商品喔!" />
-    </div>
-
-    <div v-if="favorProducts.length === 0  && $route.path === '/favor'">
-      <base-card-empty cardText="心願清單沒有東西喔！" />
-    </div>
-    <!-- modal -->
-    <b-modal
-      ref="show-product-modal"
-      :title="product.title"
-      size="md"
-    >
-      <b-card
-        :img-src="product.imageUrl"
-        :img-alt="product.title"
-        :title="product.title"
-        img-height="300px"
-        img-top
-        class="card-img-top-modal"
-      >
-        <b-card-text>
-          {{product.description}}
-        </b-card-text>
-        <b-card-text>
-          <del>原價{{product.origin_price}}元</del>
-        </b-card-text>
-        <b-card-text>
-          現在只要{{product.price}}元
-        </b-card-text>
-
-        <b-form-select
-          v-model="product.num"
-          :options="cartAmountOptions"
-          class="mb-3"
-        />
-      </b-card>
-      <template v-slot:modal-footer>
-        <div class="w-100">
-          <div
-            v-show="product.num"
-            class="float-left"
-          >
-            小記{{product.price * product.num}}元
-          </div>
-
-          <b-button
-            class="float-right"
+        <div class="d-flex justify-content-between align-items-center">
+          <h4 v-show="sortTitle === '全部'">全部</h4>
+          <h4 v-show="sortTitle !== '全部'">
+            {{sortTitle}}
+          </h4>
+          <b-form-select
+            v-model="sortSelected"
+            :options="sortOptions"
+            class="sort-form"
             size="sm"
-            variant="danger"
-            @click="addToCart(product.id,product.num)"
-          >
-            <b-spinner
-              v-if="status.loadingItem === product.id"
-              class="mr-1"
-              label="Spinning"
-              small
-              variant="secondary"
-            />
-            加到購物車
-          </b-button>
-          <b-button
-            class="float-right mr-2"
-            size="sm"
-            variant="outline-secondary"
-            @click="goToProductDetail(product.id)"
-          >
-            查看更多
-          </b-button>
+            @change="sortByPrice(sortSelected)"
+          />
         </div>
-      </template>
-    </b-modal>
+
+        <b-row v-if="isLoading">
+          <b-col
+            v-for="i in 18"
+            :key="i"
+            cols="4"
+            sm="3"
+            lg="2"
+          >
+            <v-skeleton-loader type="card" />
+          </b-col>
+        </b-row>
+
+        <b-row v-if="!isLoading">
+          <b-col
+            v-for="item in  filterPageProducts"
+            :key="item.id"
+            class="p-0"
+            cols="4"
+            sm="3"
+            lg="2"
+          >
+            <base-card-products
+              :favorList="favorList"
+              :item="item"
+              :status="status"
+              class="base-card"
+              @add-to-cart="addToCart"
+              @get-product="getProduct"
+              @go-to-product-detail="goToProductDetail"
+              @go-to-shopping-cart="goToShoppingCart"
+              @set-favor-title="setFavorItem"
+            />
+          </b-col>
+        </b-row>
+
+        <div v-if="!filterProducts.length">
+          <base-card-empty cardText="目前還沒有符合的商品喔!" />
+        </div>
+
+        <!-- modal -->
+        <b-modal
+          ref="show-product-modal"
+          :title="product.title"
+          size="md"
+        >
+          <b-card
+            :img-src="product.imageUrl"
+            :img-alt="product.title"
+            :title="product.title"
+            class="card-img-top-modal"
+            img-height="300px"
+            img-top
+          >
+            <b-card-text>
+              {{product.description}}
+            </b-card-text>
+            <b-card-text>
+              <del>原價{{product.origin_price}}元</del>
+            </b-card-text>
+            <b-card-text>
+              現在只要{{product.price}}元
+            </b-card-text>
+            <b-form-select
+              v-model="product.num"
+              :options="cartAmountOptions"
+              class="mb-3"
+            />
+          </b-card>
+          <template v-slot:modal-footer>
+            <div class="w-100">
+              <div
+                v-show="product.num"
+                class="float-left"
+              >
+                小記{{product.price * product.num}}元
+              </div>
+              <b-button
+                class="float-right"
+                size="sm"
+                variant="danger"
+                @click="addToCart(product.id,product.num)"
+              >
+                <b-spinner
+                  v-if="status.loadingItem === product.id"
+                  class="mr-1"
+                  label="Spinning"
+                  small
+                  variant="secondary"
+                />
+                加到購物車
+              </b-button>
+              <b-button
+                class="float-right mr-2"
+                size="sm"
+                variant="outline-secondary"
+                @click="goToProductDetail(product.id)"
+              >
+                查看更多
+              </b-button>
+            </div>
+          </template>
+        </b-modal>
+      </b-col>
+      <b-col md="12">
+        <base-pagination-products
+          :currentPage="currentPage"
+          :perPage="perPage"
+          :rows="rows"
+          class="float-right"
+          @get-current-page="getCurrentPage"
+        />
+      </b-col>
+    </b-row>
   </div>
 </template>
 
@@ -155,7 +166,23 @@ export default {
         { text: "選購 9 件", value: 9 },
         { text: "選購 10 件", value: 10 }
       ],
+      conditions: {
+        chooses: [],
+        ranges: []
+      },
+      currentPage: 1,
       favorList: [],
+      perPage: 18,
+      priceRadiosOptions: [
+        { text: `NT$300 以下`, value: "1", low: 0, high: 300 },
+        { text: `NT$300-500`, value: "2", low: 300, high: 500 },
+        { text: `NT$500-1000`, value: "3", low: 500, high: 1000 },
+        { text: `NT$1000-2000`, value: "4", low: 1000, high: 2000 },
+        { text: `NT$2000-2500`, value: "5", low: 2000, high: 2500 },
+        { text: `NT$2500-5000`, value: "6", low: 2500, high: 5000 },
+        { text: `NT$5000 以上`, value: "7", low: 5000, high: 1000000 }
+      ],
+      priceRadiosSelected: "",
       product: {},
       showEmptyCardProducts: false,
       showEmptyCardFavor: false,
@@ -168,16 +195,8 @@ export default {
     }
   },
   computed: {
-    favorProducts() {
-      const isArray = (fList, pAry) => {
-        let result = []
-        for (let i = 0; i < fList.length; i++) {
-          let item = pAry.filter(el => el.title === fList[i])
-          result = result.concat(item)
-        }
-        return result
-      }
-      return isArray(this.favorList, this.productsAll)
+    categories() {
+      return this.$store.state.customer.categories
     },
     filterProducts: {
       get() {
@@ -187,8 +206,22 @@ export default {
         this.$store.commit("customer/UPDATE_FILTER_PRODUCTS", val)
       }
     },
+    filterPageProducts() {
+      let start = (this.currentPage - 1) * this.perPage
+      let total =
+        this.currentPage * this.perPage > this.filterProducts
+          ? this.filterProducts
+          : this.currentPage * this.perPage
+      return this.$store.state.customer.filterProducts.slice(start, total)
+    },
+    isLoading() {
+      return this.$store.getters.isLoading
+    },
     productsAll() {
       return this.$store.state.customer.productsAll
+    },
+    rows() {
+      return this.filterProducts.length
     },
     sortTitle() {
       return this.$store.state.customer.sortTitle
@@ -215,23 +248,59 @@ export default {
       this.$refs["show-product-modal"].hide()
       this.$store.dispatch("alert/setMsgsAlert", result)
     },
+    filterHandler(item) {
+      if (item.type === "category" && item.value === "全部") {
+        this.conditions.chooses = []
+        this.$store.commit("customer/SET_SORT_TITLE", item.value)
+        this.filteredData(this.productsAll)
+      } else if (item.type === "category" && item.value !== "全部") {
+        this.conditions.chooses = []
+        this.conditions.chooses.push(item)
+        this.$store.commit("customer/SET_SORT_TITLE", item.value)
+        this.filteredData(this.productsAll)
+      } else if (item.type === "price") {
+        this.conditions.ranges = []
+        this.conditions.ranges.push(item)
+        this.filteredData(this.productsAll)
+      }
+    },
+    filteredData(data) {
+      this.$store.commit(
+        "customer/UPDATE_FILTER_PRODUCTS",
+        this.$productsFilter.handler(data, this.conditions)
+      )
+    },
+    getCurrentPage(page = 1) {
+      this.currentPage = page
+    },
     getFavorTitleList() {
       this.favorList = JSON.parse(localStorage.getItem("favorItem")) || []
     },
     async getProduct(id) {
-      //this.$store.commit("customer/SET_STATUS_LOADINGITEM", id)
       let response = await apiCustomerGetProduct(id)
       if (!response.data.success) return
       response.data.product.num = null
       this.product = response.data.product
       this.$refs["show-product-modal"].show()
-      //this.$store.commit("customer/SET_STATUS_LOADINGITEM", "")
     },
     goToProductDetail(id) {
-      this.$router.push({ path: `/detail/${id}` })
+      this.$router.push({ path: `/detail/${id}` }).catch(err => {
+        console.log(err)
+      })
     },
     goToShoppingCart() {
       this.$router.push("/customer_carts")
+    },
+    removeConditions() {
+      this.conditions = {}
+      this.priceRadiosSelected = ""
+      this.$store.commit("customer/SET_SORT_TITLE", "全部")
+      this.filteredData(this.productsAll)
+      this.$store.dispatch("alert/setMsgsAlert", {
+        msg: "已清除篩選",
+        variant: "primary",
+        id: Math.floor(new Date() / 1000)
+      })
     },
     setFavorItem(item) {
       const setTitleToStorage = () => {
@@ -280,4 +349,5 @@ export default {
   }
 }
 </script>
+
 

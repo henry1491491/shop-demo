@@ -116,10 +116,17 @@
       </template>
     </b-modal>
 
+    <v-skeleton-loader
+      v-if="isLoading"
+      class="mt-5"
+      type="table"
+    />
+
     <b-table
       v-if="!isLoading"
       :items="orders"
       :fields="fields"
+      class="mt-5"
       responsive
       small
       striped
@@ -228,15 +235,8 @@ export default {
     }
   },
   computed: {
-    loadingAmount() {
-      return this.$store.state.loadingAmount
-    },
     isLoading() {
-      if (this.loadingAmount > 0) {
-        return true
-      } else {
-        return false
-      }
+      return this.$store.getters.isLoading
     }
   },
   mounted() {
@@ -257,10 +257,8 @@ export default {
       this.$refs["edit-order-modal"].hide()
     },
     async getOrders(page = 1) {
-      this.loading = true
       let response = await apiAdminGetOrders(page)
-      if (!reponse.data.success) return
-      this.loading = false
+      if (!response.data.success) return
       this.orders = response.data.orders
       this.pagination = response.data.pagination
     },

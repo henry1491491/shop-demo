@@ -11,7 +11,9 @@ import TheDashboardCoupons from "../views/TheDashboardCoupons.vue"
 import TheCustomer from "../views/TheCustomer.vue"
 import TheCustomerCheckout from "../views/TheCustomerCheckout.vue"
 import TheCustomerContent from "../views/TheCustomerContent.vue"
-import TheCustomerContentProductDetail from "../views/TheCustomerContent.vue"
+import TheCustomerContentFavor from "../views/TheCustomerContentFavor.vue"
+import TheCustomerContentCoupon from "../views/TheCustomerContentCoupon.vue"
+import TheCustomerContentProductDetail from "../views/TheCustomerContentProductDetail.vue"
 import TheCustomerShoppingCartContent from "../views/TheCustomerShoppingCartContent"
 import TheCustomerShoppingCartForm from "../views/TheCustomerShoppingCartForm.vue"
 
@@ -36,19 +38,19 @@ const routes = [
         path: "products",
         name: "TheDashboardProducts",
         component: TheDashboardProducts,
-        meta: { requiresAuth: false }
+        meta: { requiresAuth: true }
       },
       {
         path: "orders",
         name: "TheDashboardOrders",
         component: TheDashboardOrders,
-        meta: { requiresAuth: false }
+        meta: { requiresAuth: true }
       },
       {
         path: "coupons",
         name: "TheDashboardCoupons",
         component: TheDashboardCoupons,
-        meta: { requiresAuth: false }
+        meta: { requiresAuth: true }
       }
     ]
   },
@@ -69,8 +71,13 @@ const routes = [
       },
       {
         path: "favor",
-        name: "TheCustomerContent",
-        component: TheCustomerContent
+        name: "TheCustomerContentFavor",
+        component: TheCustomerContentFavor
+      },
+      {
+        path: "coupon",
+        name: "TheCustomerContentCoupon",
+        component: TheCustomerContentCoupon
       },
       {
         path: "customer_carts",

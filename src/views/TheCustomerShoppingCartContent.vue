@@ -56,7 +56,11 @@
               colspan="2"
               class="text-right mr-3"
             >
-              <span class="mr-2">{{ item.final_total }}</span>
+              <span class="mr-2">{{ Math.round(item.final_total) }}</span>
+              <span
+                v-if="item.coupon"
+                class="text-success"
+              >(折扣後)</span>
             </b-td>
           </b-tr>
         </b-tbody>
@@ -64,26 +68,28 @@
 
       <b-card>
         <b-card-text class="text-right m-0 p-1">
-          總計：{{cartsTotal.total}}
+          總計：{{Math.round(cartsTotal.total)}}
         </b-card-text>
 
         <b-card-text
           v-show="cartsTotal.final_total !== cartsTotal.total"
           class="card-text-price text-right text-success m-0 p-1"
         >
-          折扣價：{{cartsTotal.final_total}}
+          折扣價：{{Math.round(cartsTotal.final_total)}}
         </b-card-text>
 
         <b-input-group>
+
           <b-form-input
             v-model="coupon_code"
             placeholder="請輸入優惠碼"
             type="text"
           />
+
           <b-input-group-append>
             <b-button
               variant="outline-secondary"
-              @click="addCouponCode"
+              @click="addCouponCode(cartsTotal.total,coupon_code)"
             >
               套用優惠碼
             </b-button>
@@ -104,17 +110,14 @@
     </div>
 
     <v-skeleton-loader
-      v-else
+      v-if="!loading"
       class="mx-auto"
       type="table"
     />
 
-    <div v-if="showEmptyCard">
-      <b-card>
-        <b-card-text class="text-center">
-          購物車沒有東西喔！
-        </b-card-text>
-      </b-card>
+    <div v-if="!carts.length && loading">
+      <base-card-empty cardText="你的購物車沒有東西喔！" />
+
       <div class="d-flex justify-content-end">
         <b-button
           class="mt-2 mr-2"
@@ -139,6 +142,8 @@
 
 
 <script>
+import { extend, validate } from "vee-validate"
+
 import {
   apiCustomerRemoveCart,
   apiCustomerAddCouponCode
@@ -155,7 +160,7 @@ export default {
         { key: "price", label: "單價" }
       ],
       coupon_code: "",
-      showEmptyCard: false
+      loading: false
     }
   },
   computed: {
@@ -179,13 +184,17 @@ export default {
   },
   methods: {
     async getCart() {
+      this.loading = false
       let result = await this.$store.dispatch("customer/getCart")
       if (!result.status) return
+      this.loading = true
       if (!this.carts.length) {
         this.showEmptyCard = true
       }
     },
-    async addCouponCode() {
+    async addCouponCode(total, code) {
+      let validateStatus = await this.couponValidate(total, code)
+      if (!validateStatus) return
       const coupon = {
         code: this.coupon_code
       }
@@ -196,6 +205,25 @@ export default {
       this.$store.dispatch("alert/setMsgsAlert", {
         msg: "已輸入優惠碼",
         variant: "primary",
+        id: Math.floor(new Date() / 1000)
+      })
+    },
+    async couponValidate(total, code) {
+      //let isAnyCoupon = this.carts.some(el => el.coupon)
+      //if (isAnyCoupon) return
+      let couponPrice = parseInt(code.replace(/[a-z]/g, ""))
+      extend("coupon_can_use", total => {
+        if (total > couponPrice) {
+          return true
+        }
+        return "您的金額不能使用這個優惠券喔"
+      })
+      let isValidate = await validate(total, "coupon_can_use")
+      console.log(isValidate)
+      if (!isValidate.errors.length) return true
+      this.$store.dispatch("alert/setMsgsAlert", {
+        msg: `${isValidate.errors}`,
+        variant: "danger",
         id: Math.floor(new Date() / 1000)
       })
     },
@@ -216,4 +244,11 @@ export default {
 }
 </script>
 
+<style lang="scss">
+#views-theshoppingcart_content {
+  .card {
+    height: 425px;
+  }
+}
+</style>
 

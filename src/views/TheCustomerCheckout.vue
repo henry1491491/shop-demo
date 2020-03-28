@@ -124,11 +124,11 @@ export default {
     }
   },
   mounted() {
-    this.orderId = this.$route.params.orderId
     this.getOrder()
   },
   methods: {
     async getOrder() {
+      this.orderId = this.$route.params.orderId
       let response = await apiCustomerGetOrder(this.orderId)
       if (!response.data.success) return
       this.order = response.data.order
@@ -138,10 +138,13 @@ export default {
     async payOrder() {
       let response = await apiCustomerPayOrder(this.orderId)
       if (!response.data.success) return
-      let result = await this.$store.dispatch(
-        "alert/setMsgsAlert",
-        response.data.message
-      )
+      let result = await this.$store.dispatch("alert/setMsgsAlert", {
+        duration: 2000,
+        id: Math.floor(new Date() / 1000),
+        msg: response.data.message,
+        variant: "warning"
+      })
+      console.log(result)
       if (!result.status) return
       this.getOrder()
     }

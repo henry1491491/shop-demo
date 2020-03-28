@@ -3,7 +3,7 @@
     <base-navbar
       v-show="$route.path === '/' || $route.name === 'TheCustomerContentProductDetail'"
       navbarHref="/"
-      navbarTitle="Orchids 蘭花購物網"
+      navbarTitle="Orchids 市集"
     >
       <b-navbar-toggle target="nav-collapse" />
       <b-collapse
@@ -56,13 +56,30 @@
               id="heart-outline"
               class="text-secondary"
               href="#"
-              @click="goToContentFavor"
+              @click="goToFavor"
             />
             <b-tooltip
               target="heart-outline"
               variant="secondary"
             >
               心願清單
+            </b-tooltip>
+          </b-nav-item>
+
+          <b-nav-item>
+            <b-img
+              id="coupon-img"
+              height="24"
+              src="https://image.flaticon.com/icons/svg/2527/2527719.svg"
+              width="24"
+              @click="goToCoupon"
+            />
+            <b-tooltip
+              class="mt-1"
+              target="coupon-img"
+              variant="secondary"
+            >
+              優惠券
             </b-tooltip>
           </b-nav-item>
 
@@ -211,8 +228,42 @@
       navbarHref="/customer_carts"
       navbarTitle="購物車"
     >
-      <base-stepper :stepsProps="steps" />
+      <b-row
+        no-gutters
+        class="d-flex align-items-center"
+      >
+        <b-col md="8">
+          <base-stepper :stepsProps="steps" />
+        </b-col>
+        <b-col
+          class="text-right"
+          md="4"
+        >
+          <b-button
+            class="text-secondary"
+            size="sm"
+            variant="link"
+            @click="$router.push('/favor')"
+          >
+            心願清單
+          </b-button>
+          <b-button
+            class="text-secondary"
+            size="sm"
+            variant="link"
+            @click="$router.push('/')"
+          >
+            回首頁
+          </b-button>
+        </b-col>
+      </b-row>
+    </base-navbar>
 
+    <base-navbar
+      v-show="$route.path === '/coupon'"
+      navbarHref="/coupon"
+      navbarTitle="優惠券"
+    >
       <b-button
         class="ml-auto text-secondary"
         size="sm"
@@ -220,6 +271,14 @@
         @click="$router.push('/favor')"
       >
         心願清單
+      </b-button>
+      <b-button
+        class="text-secondary"
+        size="sm"
+        variant="link"
+        @click="$router.push('/customer_carts')"
+      >
+        購物車
       </b-button>
       <b-button
         class="text-secondary"
@@ -330,7 +389,10 @@ export default {
     showCarts() {
       this.$refs["show-cart-modal"].show()
     },
-    goToContentFavor() {
+    goToCoupon() {
+      this.$router.push("/coupon")
+    },
+    goToFavor() {
       this.$router.push("/favor")
     }
   }

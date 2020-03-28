@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="mb-2">
-      依種類搜尋
+      <b>依種類搜尋</b>
     </div>
 
     <b-list-group>
@@ -20,7 +20,7 @@
     <hr>
 
     <div class="mb-2">
-      依價格搜尋
+      <b>依價格搜尋</b>
     </div>
 
     <b-list-group>

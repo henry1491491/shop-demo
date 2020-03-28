@@ -17,15 +17,11 @@
 <script>
 export default {
   name: "BaseAlert",
-  data() {
-    return {}
-  },
   computed: {
     messages() {
       return this.$store.state.alert.messages
     }
-  },
-  methods: {}
+  }
 }
 </script>
 

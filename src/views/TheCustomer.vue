@@ -1,101 +1,79 @@
 <template>
   <div class="views-thecustomer">
+    <the-customer-navbar />
+    <hr class="m-1">
+    <base-carousel
+      v-show="$route.path === '/'"
+      :items="carouselItems"
+    >
+      <h1>123</h1>
+    </base-carousel>
     <b-container>
 
-      <the-customer-navbar />
+      <router-view :key="$route.path" />
 
-      <hr class="m-1">
-
-      <b-row
-        v-if="$route.path === '/' || $route.path === '/favor'"
-        class="mt-3"
-      >
-        <b-col
-          cols="12"
-          sm="12"
-          md="2"
-        >
-          <the-customer-sidebar />
-
-        </b-col>
-        <b-col
-          cols="12"
-          sm="12"
-          md="10"
-        >
-          <b-row>
-            <b-col
-              v-for="(i,key) in 12"
-              v-show="isLoading"
-              :key="key"
-              cols="4"
-              sm="3"
-              lg="2"
-            >
-              <v-skeleton-loader
-                max-height="300"
-                type="card,list-item"
-              />
-            </b-col>
-          </b-row>
-
-          <router-view />
-
-        </b-col>
-      </b-row>
-
-      <div v-else-if="$route.name === 'TheCustomerContentProductDetail'">
-        <the-customer-content-product-detail />
-      </div>
-
-      <div v-else>
-        <router-view />
-      </div>
-
-      <hr>
-
-      <the-customer-footer />
     </b-container>
+    <hr>
+    <the-customer-footer />
   </div>
 </template>
 
 <script>
 import TheCustomerNavbar from "../views/TheCustomerNavbar"
-import TheCustomerNavbarTabs from "../views/TheCustomerNavbarTabs"
-import TheCustomerSidebar from "../views/TheCustomerSidebar"
-import TheCustomerContent from "../views/TheCustomerContent"
-import TheCustomerContentProductDetail from "../views/TheCustomerContentProductDetail"
 import TheCustomerFooter from "../views/TheCustomerFooter"
-import TheCustomerShoppingCartContent from "../views/TheCustomerShoppingCartContent"
-import TheCustomerShoppingCartForm from "../views/TheCustomerShoppingCartForm"
 
 export default {
   name: "TheCustomer",
   components: {
     TheCustomerNavbar,
-    TheCustomerNavbarTabs,
-    TheCustomerSidebar,
-    TheCustomerContent,
-    TheCustomerContentProductDetail,
-    TheCustomerFooter,
-    TheCustomerShoppingCartContent,
-    TheCustomerShoppingCartForm
+    TheCustomerFooter
   },
   data() {
     return {
-      fullPage: true
-    }
-  },
-  computed: {
-    loadingAmount() {
-      return this.$store.state.loadingAmount
-    },
-    isLoading() {
-      if (this.loadingAmount > 0) {
-        return true
-      } else {
-        return false
-      }
+      carouselItems: [
+        {
+          actived: false,
+          position: -616,
+          url:
+            "https://images.unsplash.com/photo-1556473062-062e556b0920?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
+        },
+        {
+          actived: true,
+          position: 0,
+          url:
+            "https://images.unsplash.com/photo-1514092379092-21dfee9d0b93?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1052&q=80"
+        },
+        {
+          actived: false,
+          position: 616,
+          url:
+            "https://images.unsplash.com/photo-1511663205848-84f259a259b4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80"
+        },
+        {
+          actived: false,
+          position: 1232,
+          url:
+            "https://images.unsplash.com/photo-1569218483465-1402d1ded646?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
+        },
+        {
+          actived: false,
+          position: 1848,
+          url:
+            "https://images.unsplash.com/photo-1573663257502-eae7633f2e4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=920&q=80"
+        },
+        {
+          actived: false,
+          position: 2464,
+          url:
+            "https://images.unsplash.com/photo-1531501151912-4acaa27dec3c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
+        },
+        {
+          actived: false,
+          position: 3080,
+          url:
+            "https://images.unsplash.com/photo-1525977261834-e0832db2e7e1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
+        }
+      ]
     }
   },
   mounted() {

@@ -1,0 +1,14 @@
+#views-thecustomer_contentfavor {
+  .base-card {
+    animation-name: move-right;
+    animation-duration: 3s;
+  }
+  @keyframes move-right {
+    from {
+      right: -25px;
+    }
+    to {
+      right: 0;
+    }
+  }
+}

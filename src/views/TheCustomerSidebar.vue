@@ -1,5 +1,7 @@
 <template>
   <div id="views-thecustomer_sidebar">
+    <!-- 準備刪除 -->
+    <!--
     <base-sidebar
       v-if="$route.path==='/'"
       :categories="categories"
@@ -9,6 +11,7 @@
       @filter-handler="filterHandler"
       @remove-conditions="removeConditions"
     />
+    -->
   </div>
 </template>
 

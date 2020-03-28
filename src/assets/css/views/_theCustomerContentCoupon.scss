@@ -1,0 +1,51 @@
+#views-thecustomer_contentcoupons {
+  .btn-left {
+    border-radius: 0.2rem 0 0 0.2rem;
+  }
+
+  .btn-right {
+    border-radius: 0 0.2rem 0.2rem 0;
+  }
+
+  .card {
+    animation-name: move-left;
+    animation-duration: 3s;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-left: 0.3rem solid lightgray;
+    border-radius: 0;
+    position: relative;
+  }
+
+  .dot-top {
+    background-color: #fff;
+    border-radius: 50%;
+    height: 20px;
+    position: absolute;
+    right: -10px;
+    top: -30px;
+    width: 20px;
+  }
+
+  .dot-bottom {
+    background-color: #fff;
+    border-radius: 50%;
+    bottom: -30px;
+    height: 20px;
+    position: absolute;
+    right: -10px;
+    width: 20px;
+  }
+
+  .card-coupon-left {
+    border-right: 0.1rem dotted lightgray;
+  }
+
+  @keyframes move-left {
+    from {
+      left: -100%;
+    }
+    to {
+      left: 0;
+    }
+  }
+}

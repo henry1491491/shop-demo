@@ -96,11 +96,13 @@ export default {
     async signIn() {
       let response = await apiLogLogin(this.user)
       if (!response.data.success) return
+      console.log(response)
       this.$router.push("/admin/products")
       this.$store.dispatch("alert/setMsgsAlert", {
-        msg: response.data.messages,
-        variant: "primary",
-        id: Math.floor(new Date() / 1000)
+        duration: 2000,
+        id: Math.floor(new Date() / 1000),
+        msg: response.data.message,
+        variant: "primary"
       })
     }
   }

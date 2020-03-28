@@ -1,4 +1,23 @@
 #views-thecustomer_content {
+  .carousel-background {
+    background-color: lightgray;
+    padding: 0;
+  }
+
+  .base-card {
+    animation-name: move-right;
+    animation-duration: 2s;
+  }
+
+  @keyframes move-right {
+    from {
+      right: -25px;
+    }
+    to {
+      right: 0;
+    }
+  }
+
   .sort-form {
     width: 20%;
   }

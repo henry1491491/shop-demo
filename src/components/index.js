@@ -1,16 +1,18 @@
 import Vue from "vue"
+import BaseAlert from "../components/BaseAlert"
 import BaseCardEmpty from "../components/BaseCardEmpty"
 import BaseCardProducts from "../components/BaseCardProducts"
 import BaseNavbar from "../components/BaseNavbar"
+import BasePaginationProducts from "../components/BasePaginationProducts"
 import BaseSidebar from "../components/BaseSidebar"
-import BaseAlert from "../components/BaseAlert"
+import BaseCarousel from "../components/BaseCarousel"
 import BPaginationDefault from "../components/BPaginationDefault"
-import BPaginationProducts from "../components/BPaginationProducts"
 
+Vue.component("BaseAlert", BaseAlert)
 Vue.component("BaseCardEmpty", BaseCardEmpty)
 Vue.component("BaseCardProducts", BaseCardProducts)
 Vue.component("BaseNavbar", BaseNavbar)
+Vue.component("BasePaginationProducts", BasePaginationProducts)
 Vue.component("BaseSidebar", BaseSidebar)
-Vue.component("BaseAlert", BaseAlert)
+Vue.component("BaseCarousel", BaseCarousel)
 Vue.component("BPaginationDefault", BPaginationDefault)
-Vue.component("BPaginationProducts", BPaginationProducts)

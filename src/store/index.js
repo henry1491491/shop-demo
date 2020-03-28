@@ -11,6 +11,15 @@ export default new Vuex.Store({
     loadingAmount: 0,
     messages: []
   },
+  getters: {
+    isLoading: state => {
+      if (state.loadingAmount > 0) {
+        return true
+      } else {
+        return false
+      }
+    }
+  },
   mutations: {
     SET_LOADING: (state, isLoading) => {
       isLoading ? ++state.loadingAmount : --state.loadingAmount

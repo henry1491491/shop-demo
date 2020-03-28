@@ -5,6 +5,7 @@
   >
     <b-button
       id="show-edit-product"
+      v-if="!isLoading"
       class="m-3 float-right"
       @click="showEditProduct(true)"
     >
@@ -182,6 +183,12 @@
       </template>
     </b-modal>
 
+    <v-skeleton-loader
+      v-if="isLoading"
+      class="mt-5"
+      type="table"
+    />
+
     <b-table
       v-if="!isLoading"
       :items="products"
@@ -233,6 +240,7 @@
     </b-table>
 
     <b-pagination-default
+      v-if="!isLoading"
       :pagination="pagination"
       @paginate="getProducts"
     />
@@ -289,15 +297,8 @@ export default {
     }
   },
   computed: {
-    loadingAmount() {
-      return this.$store.state.loadingAmount
-    },
     isLoading() {
-      if (this.loadingAmount > 0) {
-        return true
-      } else {
-        return false
-      }
+      return this.$store.getters.isLoading
     }
   },
   mounted() {
@@ -340,7 +341,6 @@ export default {
       if (!response.data.success) {
         this.$refs["edit-product-modal"].hide()
         this.getProducts(this.pagination.current_page)
-
         this.$store.dispatch("alert/setMsgsAlert", {
           msg: response.data.message,
           variant: "danger",
@@ -370,10 +370,8 @@ export default {
       this.$set(this.tempProduct, "imageUrl", response.data.imageUrl)
     },
     async getProducts(page = 1) {
-      //this.loading = true
       let response = await apiAdminGetProducts(page)
       if (!response.data.success) return
-      //this.loading = false
       this.products = response.data.products
       this.pagination = response.data.pagination
     }

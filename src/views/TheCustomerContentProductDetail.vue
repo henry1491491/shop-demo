@@ -1,6 +1,15 @@
 <template>
   <div id="views-thecustomer_contentproductdetail">
-    <b-breadcrumb class="mt-3">
+    <v-skeleton-loader
+      v-if="isLoading"
+      class="my-4"
+      type="heading"
+    />
+
+    <b-breadcrumb
+      v-if="!isLoading"
+      class="mt-3"
+    >
       <b-breadcrumb-item href="/">
         首頁
       </b-breadcrumb-item>
@@ -8,8 +17,16 @@
         {{product.title}}
       </b-breadcrumb-item>
     </b-breadcrumb>
+
+    <v-skeleton-loader
+      v-if="isLoading"
+      type="card"
+    />
+
     <b-card
-      :img-src="product.imageUrl"
+      v-if="!isLoading"
+      :img-src="
+      product.imageUrl"
       :img-alt="product.title"
       class="img-left-card my-3"
       img-height="350px"
@@ -87,7 +104,15 @@
       </b-button>
     </b-card>
 
-    <b-card no-body>
+    <v-skeleton-loader
+      v-if="isLoading"
+      type="list-item-two-line"
+    />
+
+    <b-card
+      v-if="!isLoading"
+      no-body
+    >
       <b-tabs card>
         <b-tab
           title="商品描述"
@@ -128,6 +153,7 @@
             @add-to-cart="addToCart"
             @get-product="getProductDetail"
             @go-to-shopping-cart="goToShoppingCart"
+            @go-to-product-detail="goToProductDetail"
             @set-favor-title="setFavorItem"
           />
 
@@ -172,6 +198,9 @@ export default {
         )
       })
     },
+    isLoading() {
+      return this.$store.getters.isLoading
+    },
     productsAll() {
       return this.$store.state.customer.productsAll
     },
@@ -198,12 +227,10 @@ export default {
       this.$store.dispatch("alert/setMsgsAlert", result)
     },
     async getProduct(id) {
-      //this.$store.commit("customer/SET_STATUS_LOADINGITEM", id)
       let response = await apiCustomerGetProduct(id)
       if (!response.data.success) return
       response.data.product.num = null
       this.product = response.data.product
-      //this.$store.commit("customer/SET_STATUS_LOADINGITEM", "")
     },
     getFavorTitleList() {
       this.favorList = JSON.parse(localStorage.getItem("favorItem")) || []
@@ -211,6 +238,9 @@ export default {
     async getProductDetail(id) {
       this.$router.push({ path: `/detail/${id}` })
       this.getProduct(id)
+    },
+    goToProductDetail(id) {
+      this.$router.push({ path: `/detail/${id}` })
     },
     goToShoppingCart() {
       this.$router.push("/customer_carts")

@@ -17,7 +17,7 @@
           src="https://image.flaticon.com/icons/svg/898/898143.svg"
           width="40px"
         >
-        <span class="nav-title">{{navbarTitle}}</span>
+        <span class="nav-title text-primary">{{navbarTitle}}</span>
       </b-button>
 
       <slot></slot>

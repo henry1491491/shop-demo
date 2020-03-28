@@ -5,6 +5,7 @@
   >
     <b-button
       id="show-edit-coupons"
+      v-if="!isLoading"
       class="m-3 float-right"
       @click="showEditCoupon(true)"
     >
@@ -105,6 +106,12 @@
       </template>
     </b-modal>
 
+    <v-skeleton-loader
+      v-if="isLoading"
+      class="mt-5"
+      type="table"
+    />
+
     <b-table
       v-if="!isLoading"
       :items="coupons"
@@ -114,7 +121,6 @@
       striped
       stacked="md"
     >
-
       <template v-slot:cell(is_enabled)="data">
         <p
           v-show="data.item.is_enabled"
@@ -149,10 +155,10 @@
     </b-table>
 
     <b-pagination-default
+      v-if="!isLoading"
       :pagination="pagination"
       @paginate="getCoupons"
     />
-
   </b-container>
 </template>
 
@@ -199,15 +205,8 @@ export default {
     }
   },
   computed: {
-    loadingAmount() {
-      return this.$store.state.loadingAmount
-    },
     isLoading() {
-      if (this.loadingAmount > 0) {
-        return true
-      } else {
-        return false
-      }
+      return this.$store.getters.isLoading
     }
   },
   mounted() {
@@ -232,9 +231,10 @@ export default {
       if (!response.data.success) return
       this.getCoupons()
       this.$store.dispatch("alert/setMsgsAlert", {
+        duration: 2000,
+        id: Math.floor(new Date() / 1000),
         msg: response.data.messages,
-        variant: "danger",
-        id: Math.floor(new Date() / 1000)
+        variant: "danger"
       })
     },
     async updateCoupon() {
@@ -251,25 +251,25 @@ export default {
         this.$refs["edit-coupon-modal"].hide()
         this.getCoupons()
         this.$store.dispatch("alert/setMsgsAlert", {
+          duration: 2000,
+          id: Math.floor(new Date() / 1000),
           msg: response.data.message,
-          variant: "danger",
-          id: Math.floor(new Date() / 1000)
+          variant: "warning"
         })
       } else {
         this.$refs["edit-coupon-modal"].hide()
         this.getCoupons()
         this.$store.dispatch("alert/setMsgsAlert", {
+          duration: 2000,
+          id: Math.floor(new Date() / 1000),
           msg: response.data.message,
-          variant: "primary",
-          id: Math.floor(new Date() / 1000)
+          variant: "primary"
         })
       }
     },
     async getCoupons(page = 1) {
-      this.loading = true
       let response = await apiAdminGetCoupons(page)
       if (!response.data.success) return
-      this.loading = false
       this.coupons = response.data.coupons
       this.pagination = response.data.pagination
     }

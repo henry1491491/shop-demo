@@ -48,7 +48,7 @@
         </b-card-text>
       </b-card-body>
 
-      <div class="base-card-btn d-flex justify-content-between m-0 p-1">
+      <div class="base-card-btn d-flex justify-content-between m-0 p-2">
         <a
           href="#"
           class="card-link"
@@ -62,16 +62,16 @@
           <cart-outline-icon
             v-if="status.loadingItem !== item.id"
             class="text-danger"
-            @click.stop="addToCart(item.id)"
+            @click.prevent="addToCart(item.id)"
           />
         </a>
         <b-button
           class="ml-auto"
           size="sm"
-          variant="danger"
-          @click="goToShoppingCart(item.id)"
+          variant="outline-secondary"
+          @click="goToProductDetail(item.id)"
         >
-          直接購買
+          查看更多
         </b-button>
       </div>
     </b-card>
@@ -96,6 +96,9 @@ export default {
     async addToCart(id) {
       this.$emit("add-to-cart", id)
       return true
+    },
+    goToProductDetail(id) {
+      this.$emit("go-to-product-detail", id)
     },
     async goToShoppingCart(id) {
       let result = await this.addToCart(id)

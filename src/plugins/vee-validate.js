@@ -1,7 +1,11 @@
 import Vue from "vue"
-import { ValidationProvider, ValidationObserver, extend } from "vee-validate"
+import {
+  extend,
+  localize,
+  ValidationProvider,
+  ValidationObserver
+} from "vee-validate"
 import { required, email, min, max } from "vee-validate/dist/rules"
-import { localize } from "vee-validate"
 import tw from "vee-validate/dist/locale/zh_TW.json"
 
 extend("email", email)

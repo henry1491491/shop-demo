@@ -1,0 +1,106 @@
+$container-width: 100%;
+$item-height: 300px;
+$item-bg-color: lightgray;
+$items-gutters: 16px;
+$item-side-width: calc((100% - 600px - $items-gutters * 2) / 2);
+$item-middle-width: 600px;
+@mixin btn {
+  background-color: #12343b;
+  height: 60px;
+  opacity: 0.3;
+  position: absolute;
+  top: calc(50% - 30px);
+  width: 22px;
+  z-index: 1;
+  &:hover {
+    opacity: 1;
+  }
+  a {
+    color: #fff;
+    text-decoration: none;
+    left: 6px;
+    margin: auto;
+    position: absolute;
+    top: 20px;
+  }
+}
+@mixin carousel-item {
+  background-color: $item-bg-color;
+  height: $item-height;
+  position: absolute;
+}
+
+#components-base_carousel {
+  .carousel-container {
+    height: $item-height;
+    position: relative;
+    width: $container-width;
+
+    .carousel-item-middle {
+      @include carousel-item;
+      left: calc(50% - 300px);
+      width: $item-middle-width;
+      li {
+        display: list-item;
+        left: 0;
+        list-style: none;
+        position: absolute;
+        top: 0;
+        img,
+        .img-content {
+          height: $item-height;
+          position: absolute;
+          width: $item-middle-width;
+        }
+        .img-content {
+          top: 10%;
+          left: 10%;
+        }
+      }
+    }
+    .carousel-item-left {
+      @include carousel-item;
+      left: 0;
+      min-width: $item-side-width;
+    }
+    .carousel-item-right {
+      @include carousel-item;
+      right: 0;
+      min-width: $item-side-width;
+    }
+
+    .item {
+      height: $item-height;
+      opacity: 0.3;
+      width: $item-middle-width;
+      z-index: 1;
+    }
+
+    .prev-btn {
+      @include btn;
+      left: calc(50% - 322px);
+    }
+    .next-btn {
+      @include btn;
+      right: calc(50% - 322px);
+    }
+  }
+  .counter-group {
+    text-align: center;
+    margin-top: auto;
+    width: $container-width;
+    .dot {
+      cursor: pointer;
+      height: 13px;
+      width: 13px;
+      margin: 0 2px;
+      background-color: #bbb;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background-color 0.6s ease;
+    }
+    .active {
+      background-color: #12343b;
+    }
+  }
+}

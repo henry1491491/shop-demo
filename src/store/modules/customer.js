@@ -72,9 +72,9 @@ export default {
       commit("SET_STATUS_LOADINGITEM", "")
       dispatch("getCart")
       return {
+        id: Math.floor(new Date() / 1000),
         msg: response.data.message,
-        variant: "primary",
-        id: Math.floor(new Date() / 1000)
+        variant: "warning"
       }
     },
     async getCart({ commit }) {

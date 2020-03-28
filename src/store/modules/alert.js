@@ -19,12 +19,18 @@ export default {
     async setMsgsAlert({ commit, dispatch }, item) {
       commit("SET_MESSAGES_ALERT", item)
       dispatch("delMsgsAlert", item)
-      return { satus: true }
+      return { status: true }
     },
     async delMsgsAlert({ commit }, item) {
+      let duration
+      if (!item.duration) {
+        duration = 3000
+      } else {
+        duration = item.duration
+      }
       window.setTimeout(() => {
         commit("DELETE_MESSAGES_ALERT", item)
-      }, 3000)
+      }, duration)
     }
   }
 }
