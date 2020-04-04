@@ -1,22 +1,22 @@
-import Vue from "vue"
+import Vue from 'vue'
 
 Vue.prototype.$productsFilter = {
   ProductFilters: {
-    rangesFilter(products, ranges) {
+    rangesFilter (products, ranges) {
       if (ranges.length === 0) return products
-      for (let range of ranges) {
+      for (const range of ranges) {
         products = products.filter(item => {
           return item[range.type] >= range.low && item[range.type] <= range.high
         })
       }
       return products
     },
-    choosesFilter(products, chooses) {
+    choosesFilter (products, chooses) {
       let tmpProducts = []
       if (chooses.length === 0) {
         tmpProducts = products
       } else {
-        for (let choice of chooses) {
+        for (const choice of chooses) {
           tmpProducts = tmpProducts.concat(
             products.filter(item => {
               if (item[choice.type] === undefined) return
@@ -28,16 +28,17 @@ Vue.prototype.$productsFilter = {
       return tmpProducts
     }
   },
-  handler(productsAll, conditions) {
+  handler (productsAll, conditions) {
     return this.doFilter(productsAll, conditions)
   },
-  doFilter(products, conditions) {
-    for (let key in conditions) {
+  doFilter (products, conditions) {
+    for (const key in conditions) {
       if (
-        this.ProductFilters.hasOwnProperty(key + "Filter") &&
-        typeof this.ProductFilters[key + "Filter"] === "function"
+        Object.prototype.hasOwnProperty.call(this.ProductFilters, `${key}Filter`) &&
+        // this.ProductFilters.hasOwnProperty(key + 'Filter') &&
+        typeof this.ProductFilters[key + 'Filter'] === 'function'
       ) {
-        products = this.ProductFilters[key + "Filter"](
+        products = this.ProductFilters[key + 'Filter'](
           products,
           conditions[key]
         )

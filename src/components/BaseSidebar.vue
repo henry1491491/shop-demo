@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="components-base_sidebar">
     <div class="mb-2">
       <b>依種類搜尋</b>
     </div>
@@ -13,7 +13,7 @@
         class="p-1"
         @click="filterHandler({type:'category',value:item})"
       >
-        <span class="ml-2">{{item}}</span>
+        <span class="ml-2">{{ item }}</span>
       </b-list-group-item>
     </b-list-group>
 
@@ -35,7 +35,7 @@
             name="some-radios"
             @change="filterHandler({type:'price',low:item.low,high:item.high})"
           >
-            {{item.text}}
+            {{ item.text }}
           </b-form-radio>
         </b-form-group>
       </b-list-group-item>
@@ -55,24 +55,42 @@
 
 <script>
 export default {
-  name: "BaseSidebar",
-  data() {
+  name: 'BaseSidebar',
+  data () {
     return {
       propsPriceRadiosSelected: this.priceRadiosSelected
     }
   },
   props: {
-    categories: { type: Array },
-    priceRadiosOptions: { type: Array },
-    priceRadiosSelected: { type: String },
-    sortTitle: { type: String }
+    categories: {
+      type: Array,
+      default: () => {
+        return this.$store.state.customer.categories
+      }
+    },
+    priceRadiosOptions: {
+      type: Array,
+      default: () => {
+        return [
+          { text: 'NT$300 以下', value: '1', low: 0, high: 300 },
+          { text: 'NT$300-500', value: '2', low: 300, high: 500 },
+          { text: 'NT$500-1000', value: '3', low: 500, high: 1000 },
+          { text: 'NT$1000-2000', value: '4', low: 1000, high: 2000 },
+          { text: 'NT$2000-2500', value: '5', low: 2000, high: 2500 },
+          { text: 'NT$2500-5000', value: '6', low: 2500, high: 5000 },
+          { text: 'NT$5000 以上', value: '7', low: 5000, high: 1000000 }
+        ]
+      }
+    },
+    priceRadiosSelected: { type: String, default: '1' },
+    sortTitle: { type: String, default: '全部' }
   },
   methods: {
-    filterHandler(item) {
-      this.$emit("filter-handler", item)
+    filterHandler (item) {
+      this.$emit('filter-handler', item)
     },
-    removeConditions() {
-      this.$emit("remove-conditions")
+    removeConditions () {
+      this.$emit('remove-conditions')
     }
   }
 }

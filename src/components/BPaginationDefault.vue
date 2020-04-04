@@ -22,12 +22,13 @@
         :class="{'active':pagination.current_page === page}"
         :key="page"
         class="page-item"
-      ><a
+      >
+        <a
           class="page-link"
           href="#"
           @click.prevent="paginationHandler(page)"
         >
-          {{page}}
+          {{ page }}
         </a>
       </li>
       <li
@@ -48,18 +49,19 @@
 </template>
 
 <script>
+/* eslint-disable vue/require-default-prop */
 export default {
-  name: "BPaginationDefault",
+  name: 'BPaginationDefault',
   props: {
     pagination: Object,
     justify: String
   },
-  data() {
+  data () {
     return {}
   },
   methods: {
-    paginationHandler(page) {
-      this.$emit("paginate", page)
+    paginationHandler (page) {
+      this.$emit('paginate', page)
     }
   }
 }

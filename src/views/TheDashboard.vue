@@ -37,7 +37,7 @@
                 href="#"
                 aria-label="Add a new report"
               >
-                <span data-feather="plus-circle"></span>
+                <span data-feather="plus-circle" />
               </a>
             </h6>
             <ul class="nav flex-column">
@@ -79,7 +79,7 @@
                 href="#"
                 aria-label="Add a new report"
               >
-                <span data-feather="plus-circle"></span>
+                <span data-feather="plus-circle" />
               </a>
             </h6>
             <ul class="nav flex-column mb-2">
@@ -108,22 +108,21 @@
 </template>
 
 <script>
-import { apiLogLogout } from "../plugins/axios"
+import { apiLogLogout } from '../plugins/axios'
 
 export default {
-  name: "TheDashboard",
-  data() {
+  name: 'TheDashboard',
+  data () {
     return {
       fullPage: true
     }
   },
   methods: {
-    async signOut() {
-      let response = await apiLogLogout()
+    async signOut () {
+      const response = await apiLogLogout()
       if (!response.data.success) return
-      this.$router.push("/login")
+      this.$router.push('/login')
     }
   }
 }
 </script>
-

@@ -163,41 +163,41 @@
 </template>
 
 <script>
-import { apiAdminGetCoupons, apiAdminDeleteCoupons } from "../plugins/axios"
+import { apiAdminGetCoupons, apiAdminDeleteCoupons } from '../plugins/axios'
 
 export default {
-  name: "TheDashboardCoupons",
-  data() {
+  name: 'TheDashboardCoupons',
+  data () {
     return {
       coupons: [],
       fields: [
         {
-          key: "title",
-          label: "名稱"
+          key: 'title',
+          label: '名稱'
         },
         {
-          key: "percent",
-          label: "折扣百分比"
+          key: 'percent',
+          label: '折扣百分比'
         },
         {
-          key: "due_date",
-          label: "到期日"
+          key: 'due_date',
+          label: '到期日'
         },
         {
-          key: "is_enabled",
-          label: "是否啟用"
+          key: 'is_enabled',
+          label: '是否啟用'
         },
-        { key: "actions", label: "編輯" }
+        { key: 'actions', label: '編輯' }
       ],
       file: null,
       isEnableOptions: [
-        { text: "是", value: 1 },
-        { text: "否", value: 0 }
+        { text: '是', value: 1 },
+        { text: '否', value: 0 }
       ],
       isNew: false,
       pagination: {},
       tempCoupon: {
-        title: "",
+        title: '',
         percent: null,
         due_date: null,
         is_enabled: 1
@@ -205,15 +205,15 @@ export default {
     }
   },
   computed: {
-    isLoading() {
+    isLoading () {
       return this.$store.getters.isLoading
     }
   },
-  mounted() {
+  mounted () {
     this.getCoupons()
   },
   methods: {
-    showEditCoupon(isNew, item) {
+    showEditCoupon (isNew, item) {
       if (isNew) {
         this.tempCoupon = {}
         this.isNew = true
@@ -221,54 +221,54 @@ export default {
         this.tempCoupon = Object.assign({}, item)
         this.isNew = false
       }
-      this.$refs["edit-coupon-modal"].show()
+      this.$refs['edit-coupon-modal'].show()
     },
-    cancerEditCoupon() {
-      this.$refs["edit-coupon-modal"].hide()
+    cancerEditCoupon () {
+      this.$refs['edit-coupon-modal'].hide()
     },
-    async deleteCoupon(item) {
-      let response = await apiAdminDeleteCoupons(item)
+    async deleteCoupon (item) {
+      const response = await apiAdminDeleteCoupons(item)
       if (!response.data.success) return
       this.getCoupons()
-      this.$store.dispatch("alert/setMsgsAlert", {
+      this.$store.dispatch('alert/setMsgsAlert', {
         duration: 2000,
         id: Math.floor(new Date() / 1000),
         msg: response.data.messages,
-        variant: "danger"
+        variant: 'danger'
       })
     },
-    async updateCoupon() {
-      let api = `/admin/coupon`
-      let httpMethod = "post"
+    async updateCoupon () {
+      let api = '/admin/coupon'
+      let httpMethod = 'post'
       if (!this.isNew) {
         api = `/admin/coupon/${this.tempCoupon.id}`
-        httpMethod = "put"
+        httpMethod = 'put'
       }
-      let response = await this.axios[httpMethod](api, {
+      const response = await this.axios[httpMethod](api, {
         data: this.tempCoupon
       })
       if (!response.data.success) {
-        this.$refs["edit-coupon-modal"].hide()
+        this.$refs['edit-coupon-modal'].hide()
         this.getCoupons()
-        this.$store.dispatch("alert/setMsgsAlert", {
+        this.$store.dispatch('alert/setMsgsAlert', {
           duration: 2000,
           id: Math.floor(new Date() / 1000),
           msg: response.data.message,
-          variant: "warning"
+          variant: 'warning'
         })
       } else {
-        this.$refs["edit-coupon-modal"].hide()
+        this.$refs['edit-coupon-modal'].hide()
         this.getCoupons()
-        this.$store.dispatch("alert/setMsgsAlert", {
+        this.$store.dispatch('alert/setMsgsAlert', {
           duration: 2000,
           id: Math.floor(new Date() / 1000),
           msg: response.data.message,
-          variant: "primary"
+          variant: 'primary'
         })
       }
     },
-    async getCoupons(page = 1) {
-      let response = await apiAdminGetCoupons(page)
+    async getCoupons (page = 1) {
+      const response = await apiAdminGetCoupons(page)
       if (!response.data.success) return
       this.coupons = response.data.coupons
       this.pagination = response.data.pagination

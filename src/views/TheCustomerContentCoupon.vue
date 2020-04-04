@@ -25,9 +25,9 @@
               md="4"
               no-gutters
             >
-              <div class="dot-top"></div>
+              <div class="dot-top" />
               <b-card-title class="text-center">
-                {{item.title}}
+                {{ item.title }}
               </b-card-title>
               <b-card-text class="text-center">
                 <b-button
@@ -36,7 +36,7 @@
                   size="sm"
                   variant="danger"
                 >
-                  {{item.percent * 0.1}} 折
+                  {{ item.percent * 0.1 }} 折
                 </b-button>
                 <b-button
                   class="btn-right"
@@ -44,10 +44,10 @@
                   size="sm"
                   variant="outline-danger"
                 >
-                  {{item.code}}
+                  {{ item.code }}
                 </b-button>
               </b-card-text>
-              <div class="dot-bottom"></div>
+              <div class="dot-bottom" />
             </b-col>
             <b-col
               class="text-center"
@@ -64,52 +64,50 @@
                 複製優惠碼
               </b-button>
               <b-card-text class="text-center">
-                到期日:{{item.due_date}}
+                到期日:{{ item.due_date }}
               </b-card-text>
             </b-col>
           </b-row>
-
         </b-card>
-
       </b-col>
     </b-row>
   </div>
 </template>
 
 <script>
-import { apiAdminGetCoupons } from "../plugins/axios"
+import { apiAdminGetCoupons } from '../plugins/axios'
 
 export default {
-  name: "TheCustomerContentCoupon",
-  data() {
+  name: 'TheCustomerContentCoupon',
+  data () {
     return {
       coupons: []
     }
   },
-  mounted() {
-    this.getCoupons()
-  },
   computed: {
-    isLoading() {
+    isLoading () {
       return this.$store.getters.isLoading
     }
   },
+  created () {
+    this.getCoupons()
+  },
   methods: {
-    async getCoupons(page = 1) {
-      let response = await apiAdminGetCoupons(page)
+    async getCoupons (page = 1) {
+      const response = await apiAdminGetCoupons(page)
       if (!response.data.success) return
       this.coupons = response.data.coupons
     },
-    onCopy(e) {
-      this.$store.dispatch("alert/setMsgsAlert", {
+    onCopy (e) {
+      this.$store.dispatch('alert/setMsgsAlert', {
         duration: 2000,
         id: Math.floor(new Date() / 1000),
-        msg: "已複製優惠碼",
-        variant: "warning"
+        msg: '已複製優惠碼',
+        variant: 'warning'
       })
     },
-    onError() {
-      console.log("failed")
+    onError () {
+      console.log('failed')
     }
   }
 }

@@ -1,7 +1,7 @@
-import Vue from "vue"
-import Vuex from "vuex"
-import alertModules from "./modules/alert"
-import customerModules from "./modules/customer"
+import Vue from 'vue'
+import Vuex from 'vuex'
+import alertModules from './modules/alert'
+import customerModules from './modules/customer'
 
 Vue.use(Vuex)
 
@@ -26,8 +26,8 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    setLoading({ commit }, isLoading) {
-      commit("SET_LOADING", isLoading)
+    setLoading ({ commit }, isLoading) {
+      commit('SET_LOADING', isLoading)
     }
   },
   modules: {

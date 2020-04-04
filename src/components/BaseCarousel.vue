@@ -1,7 +1,7 @@
 <template>
   <div id="components-base_carousel">
     <div class="carousel-container">
-      <div class="carousel-item-left"></div>
+      <div class="carousel-item-left" />
       <div class="carousel-item-middle">
         <ul>
           <li
@@ -12,22 +12,26 @@
           >
             <img :src="item.imgUrl">
             <div class="img-content">
-              <slot></slot>
+              <base-carousel-body :item="item" />
             </div>
           </li>
         </ul>
       </div>
-      <div class="carousel-item-right"></div>
-      <div class="prev-btn">
+      <div class="carousel-item-right" />
+      <div
+        class="prev-btn"
+        @click="goPrev(1)"
+      >
         <a
           href="#"
-          v-on:click="goPrev(1)"
         >&#10094;</a>
       </div>
-      <div class="next-btn">
+      <div
+        class="next-btn"
+        @click="goNext(1)"
+      >
         <a
           href="#"
-          v-on:click="goNext(1)"
         >&#10095;</a>
       </div>
     </div>
@@ -37,57 +41,61 @@
         :key="key"
         :class="[item.position === 0 ? 'active' :'']"
         class="dot"
-      ></span>
+      />
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "BaseCarousel",
+  name: 'BaseCarousel',
   props: {
+    autoPlay: { type: Boolean, default: true },
+    interval: { type: Number || String, default: 5000 },
+    // eslint-disable-next-line vue/require-default-prop
     items: { type: Array }
+
   },
-  data() {
+  data () {
     return {
-      endPosition: 3080,
-      autoPlay: true,
+      endPosition: 1232,
       currentSlider: 1,
       propsItems: this.items
     }
   },
   computed: {
-    showItems: {
-      get() {
-        return this.propsItems.map((el, key) => {
-          if (el.position === 0) {
-            return {
-              id: key,
-              imgStyle: `transform:translate3d(${this.propsItems[key].position}px, 0px, 0px);transition: transform 1s;opacity:1`,
-              imgUrl: this.propsItems[key].url
-            }
-          } else if (el.position === -166 || el.position === 616) {
-            return {
-              id: key,
-              imgStyle: `transform:translate3d(${this.propsItems[key].position}px, 0px, 0px);transition: transform .2s;z-index:0`,
-              imgUrl: this.propsItems[key].url
-            }
-          } else {
-            return {
-              id: key,
-              imgStyle: `transform:translate3d(${this.propsItems[key].position}px, 0px, 0px);transition: all ease 1s`,
-              imgUrl: this.propsItems[key].url
-            }
+    showItems () {
+      return this.propsItems.map((el, key) => {
+        if (el.position === 0) {
+          return {
+            content: el.content,
+            id: key,
+            imgStyle: `transform:translate3d(${this.propsItems[key].position}px, 0px, 0px);transition: transform 1s;opacity:1`,
+            imgUrl: this.propsItems[key].url
           }
-        })
-      },
-      set(val) {
-        this.showItems = val
-      }
+        } else if (el.position === -166 || el.position === 616) {
+          return {
+            content: el.content,
+            id: key,
+            imgStyle: `transform:translate3d(${this.propsItems[key].position}px, 0px, 0px);transition: transform .2s;z-index:0`,
+            imgUrl: this.propsItems[key].url
+          }
+        } else {
+          return {
+            content: el.content,
+            id: key,
+            imgStyle: `transform:translate3d(${this.propsItems[key].position}px, 0px, 0px);transition: all ease 1s`,
+            imgUrl: this.propsItems[key].url
+          }
+        }
+      })
     }
   },
+  created () {
+    this.playCarousel(this.interval)
+  },
   methods: {
-    goNext() {
+    goNext () {
       this.propsItems = this.propsItems.map(el => {
         if (el.position === -616) {
           el.position = this.endPosition
@@ -98,7 +106,7 @@ export default {
         }
       })
     },
-    goPrev() {
+    goPrev () {
       this.propsItems = this.propsItems.map(el => {
         if (el.position === this.endPosition) {
           el.position = -616
@@ -108,10 +116,16 @@ export default {
           return el
         }
       })
+    },
+    playCarousel (interval) {
+      if (this.autoPlay) {
+        window.setInterval(() => {
+          this.goNext()
+        }, interval)
+      } else {
+
+      }
     }
   }
 }
 </script>
-
-
-

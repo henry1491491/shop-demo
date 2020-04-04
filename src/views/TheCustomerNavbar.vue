@@ -2,8 +2,8 @@
   <div id="views-thecustomer_navbar">
     <base-navbar
       v-show="$route.path === '/' || $route.name === 'TheCustomerContentProductDetail'"
-      navbarHref="/"
-      navbarTitle="Orchids 市集"
+      navbar-href="/"
+      navbar-title="Orchids 市集"
     >
       <b-navbar-toggle target="nav-collapse" />
       <b-collapse
@@ -103,7 +103,7 @@
               href="#"
               variant="danger"
             >
-              {{cartsLength}}
+              {{ cartsLength }}
             </b-badge>
           </b-nav-item>
         </b-navbar-nav>
@@ -166,7 +166,7 @@
                   {{ item.product.title }}
                   <span
                     v-if="item.coupon"
-                    class="m-0 text-success"
+                    class="m-0 text-danger"
                   >(已套用優惠券)</span>
                 </b-td>
                 <b-td>{{ item.qty }} / {{ item.product.unit }}</b-td>
@@ -185,8 +185,8 @@
             v-show="carts.length"
             class="w-100"
           >
-            <span class="mr-2">總計：{{cartsTotal.total}}</span>
-            <span class="text-success h5">折扣價：{{cartsTotal.final_total}}</span>
+            <span class="mr-2">總計：{{ cartsTotal.total }}</span>
+            <span class="text-danger h5">折扣價：{{ cartsTotal.final_total }}</span>
             <b-button
               class="float-right"
               href="/customer_carts"
@@ -202,8 +202,8 @@
 
     <base-navbar
       v-show="$route.path === '/favor'"
-      navbarHref="/favor"
-      navbarTitle="心願清單"
+      navbar-href="/favor"
+      navbar-title="心願清單"
     >
       <b-button
         class="ml-auto text-secondary"
@@ -225,15 +225,15 @@
 
     <base-navbar
       v-show="$route.path === '/customer_carts' || $route.path === '/customer_carts_form' || $route.name === 'TheCustomerCheckout'"
-      navbarHref="/customer_carts"
-      navbarTitle="購物車"
+      navbar-href="/customer_carts"
+      navbar-title="購物車"
     >
       <b-row
         no-gutters
         class="d-flex align-items-center"
       >
         <b-col md="8">
-          <base-stepper :stepsProps="steps" />
+          <base-stepper :steps-props="steps" />
         </b-col>
         <b-col
           class="text-right"
@@ -261,8 +261,8 @@
 
     <base-navbar
       v-show="$route.path === '/coupon'"
-      navbarHref="/coupon"
-      navbarTitle="優惠券"
+      navbar-href="/coupon"
+      navbar-title="優惠券"
     >
       <b-button
         class="ml-auto text-secondary"
@@ -293,68 +293,68 @@
 </template>
 
 <script>
-import { apiCustomerRemoveCart } from "../plugins/axios"
-import BaseStepper from "../components/BaseStepper"
+import { apiCustomerRemoveCart } from '../plugins/axios'
+import BaseStepper from '../components/BaseStepper'
 
 export default {
-  name: "TheCustomerNavbar",
+  name: 'TheCustomerNavbar',
   components: {
     BaseStepper
   },
-  data() {
+  data () {
     return {
       stepsData: [
-        { text: "購物車內容", finished: false },
-        { text: "訂購人資訊", finished: false },
-        { text: "確認付款", finished: false }
+        { text: '購物車內容', finished: false },
+        { text: '訂購人資訊', finished: false },
+        { text: '確認付款', finished: false }
       ],
       cardfields: [
-        { key: "action", label: "" },
-        { key: "title", label: "品名" },
-        { key: "qty", label: "數量" },
-        { key: "price", label: "單價" }
+        { key: 'action', label: '' },
+        { key: 'title', label: '品名' },
+        { key: 'qty', label: '數量' },
+        { key: 'price', label: '單價' }
       ]
     }
   },
   computed: {
-    carts() {
+    carts () {
       return this.$store.state.customer.carts
     },
-    cartsLength() {
+    cartsLength () {
       return this.$store.state.customer.carts.length
     },
-    cartsTotal() {
+    cartsTotal () {
       return this.$store.state.customer.cartsTotal
     },
-    isPaid() {
+    isPaid () {
       return this.$store.state.customer.order.is_paid
     },
     status: {
-      get() {
+      get () {
         return this.$store.state.customer.status
       },
-      set(val) {
-        this.$store.commit("customer/SET_STATUS_LOADINGITEM", val)
+      set (val) {
+        this.$store.commit('customer/SET_STATUS_LOADINGITEM', val)
       }
     },
-    steps() {
-      if (this.$route.name === "TheCustomerShoppingCartContent") {
+    steps () {
+      if (this.$route.name === 'TheCustomerShoppingCartContent') {
         return this.stepsData.map(el => {
           el.finished = false
           return el
         })
-      } else if (this.$route.name === "TheCustomerShoppingCartForm") {
+      } else if (this.$route.name === 'TheCustomerShoppingCartForm') {
         return this.stepsData.map(el => {
-          if (el.text === "購物車內容") {
+          if (el.text === '購物車內容') {
             el.finished = true
             return el
           } else {
             return el
           }
         })
-      } else if (this.$route.name === "TheCustomerCheckout" && !this.isPaid) {
+      } else if (this.$route.name === 'TheCustomerCheckout' && !this.isPaid) {
         return this.stepsData.map(el => {
-          if (el.text !== "確認付款") {
+          if (el.text !== '確認付款') {
             el.finished = true
             return el
           } else {
@@ -369,34 +369,32 @@ export default {
       }
     }
   },
-  mounted() {
-    this.$store.dispatch("customer/getCart")
+  mounted () {
+    this.$store.dispatch('customer/getCart')
   },
   methods: {
-    async removeCart(id) {
-      this.$store.commit("customer/SET_STATUS_LOADINGITEM", id)
+    async removeCart (id) {
+      this.$store.commit('customer/SET_STATUS_LOADINGITEM', id)
       let response = await apiCustomerRemoveCart(id)
       if (!response.data.success) return
-      response = await this.$store.dispatch("customer/getCart")
+      response = await this.$store.dispatch('customer/getCart')
       if (!response.status) return
-      this.$store.commit("customer/SET_STATUS_LOADINGITEM", "")
-      this.$store.dispatch("alert/setMsgsAlert", {
-        msg: "已刪除",
-        variant: "danger",
+      this.$store.commit('customer/SET_STATUS_LOADINGITEM', '')
+      this.$store.dispatch('alert/setMsgsAlert', {
+        msg: '已刪除',
+        variant: 'danger',
         id: Math.floor(new Date() / 1000)
       })
     },
-    showCarts() {
-      this.$refs["show-cart-modal"].show()
+    showCarts () {
+      this.$refs['show-cart-modal'].show()
     },
-    goToCoupon() {
-      this.$router.push("/coupon")
+    goToCoupon () {
+      this.$router.push('/coupon')
     },
-    goToFavor() {
-      this.$router.push("/favor")
+    goToFavor () {
+      this.$router.push('/favor')
     }
   }
 }
 </script>
-
-

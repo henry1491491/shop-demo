@@ -1,7 +1,7 @@
 <template>
   <div id="views-thecustomer_contentfavor">
     <b-row v-if="!loading">
-      <b-col md="1"></b-col>
+      <b-col md="1" />
       <b-col>
         <b-row>
           <b-col
@@ -15,10 +15,10 @@
           </b-col>
         </b-row>
       </b-col>
-      <b-col md="1"></b-col>
+      <b-col md="1" />
     </b-row>
     <b-row v-if="loading">
-      <b-col md="1"></b-col>
+      <b-col md="1" />
       <b-col>
         <b-row>
           <b-col
@@ -30,7 +30,7 @@
             lg="2"
           >
             <base-card-products
-              :favorList="favorList"
+              :favor-list="favorList"
               :item="item"
               :status="status"
               class="base-card"
@@ -43,11 +43,11 @@
           </b-col>
         </b-row>
       </b-col>
-      <b-col md="1"></b-col>
+      <b-col md="1" />
     </b-row>
 
     <div v-if="!favorProducts.length && loading">
-      <base-card-empty cardText="心願清單沒有東西喔！" />
+      <base-card-empty card-text="心願清單沒有東西喔！" />
     </div>
 
     <!-- modal -->
@@ -65,13 +65,13 @@
         class="card-img-top-modal"
       >
         <b-card-text>
-          {{product.description}}
+          {{ product.description }}
         </b-card-text>
         <b-card-text>
-          <del>原價{{product.origin_price}}元</del>
+          <del>原價{{ product.origin_price }}元</del>
         </b-card-text>
         <b-card-text>
-          現在只要{{product.price}}元
+          現在只要{{ product.price }}元
         </b-card-text>
 
         <b-form-select
@@ -86,7 +86,7 @@
             v-show="product.num"
             class="float-left"
           >
-            小記{{product.price * product.num}}元
+            小記{{ product.price * product.num }}元
           </div>
 
           <b-button
@@ -115,99 +115,98 @@
         </div>
       </template>
     </b-modal>
-
   </div>
 </template>
 
 <script>
-import { apiCustomerGetProduct } from "../plugins/axios"
+import { apiCustomerGetProduct } from '../plugins/axios'
 
 export default {
-  name: "TheCustomerContentFavor",
-  data() {
+  name: 'TheCustomerContentFavor',
+  data () {
     return {
       cartAmountOptions: [
-        { text: "請選擇數量", value: null },
-        { text: "選購 1 件", value: 1 },
-        { text: "選購 2 件", value: 2 },
-        { text: "選購 3 件", value: 3 },
-        { text: "選購 4 件", value: 4 },
-        { text: "選購 5 件", value: 5 },
-        { text: "選購 6 件", value: 6 },
-        { text: "選購 7 件", value: 7 },
-        { text: "選購 8 件", value: 8 },
-        { text: "選購 9 件", value: 9 },
-        { text: "選購 10 件", value: 10 }
+        { text: '請選擇數量', value: null },
+        { text: '選購 1 件', value: 1 },
+        { text: '選購 2 件', value: 2 },
+        { text: '選購 3 件', value: 3 },
+        { text: '選購 4 件', value: 4 },
+        { text: '選購 5 件', value: 5 },
+        { text: '選購 6 件', value: 6 },
+        { text: '選購 7 件', value: 7 },
+        { text: '選購 8 件', value: 8 },
+        { text: '選購 9 件', value: 9 },
+        { text: '選購 10 件', value: 10 }
       ],
       favorList: [],
       product: {},
       loading: false
     }
   },
-  mounted() {
+  mounted () {
     this.getFavorTitleList()
   },
   computed: {
-    favorProducts() {
+    favorProducts () {
       const isArray = (fList, pAry) => {
         let result = []
         for (let i = 0; i < fList.length; i++) {
-          let item = pAry.filter(el => el.title === fList[i])
+          const item = pAry.filter(el => el.title === fList[i])
           result = result.concat(item)
         }
         return result
       }
       return isArray(this.favorList, this.productsAll)
     },
-    productsAll() {
+    productsAll () {
       return this.$store.state.customer.productsAll
     },
     status: {
-      get() {
+      get () {
         return this.$store.state.customer.status
       },
-      set(val) {
-        this.$store.commit("customer/SET_STATUS_LOADINGITEM", val)
+      set (val) {
+        this.$store.commit('customer/SET_STATUS_LOADINGITEM', val)
       }
     }
   },
   methods: {
-    async addToCart(id, qty = 1) {
-      let result = await this.$store.dispatch("customer/addToCart", {
+    async addToCart (id, qty = 1) {
+      const result = await this.$store.dispatch('customer/addToCart', {
         id,
         qty: 1
       })
       if (!result.msg) return
-      this.$refs["show-product-modal"].hide()
-      this.$store.dispatch("alert/setMsgsAlert", result)
+      this.$refs['show-product-modal'].hide()
+      this.$store.dispatch('alert/setMsgsAlert', result)
     },
-    async getFavorTitleList() {
+    async getFavorTitleList () {
       this.loading = false
-      let result = await window.setTimeout(() => {
+      const result = await window.setTimeout(() => {
         this.loading = true
         return this.loading
       }, 1000)
       if (!result) return
-      this.favorList = JSON.parse(localStorage.getItem("favorItem")) || []
+      this.favorList = JSON.parse(localStorage.getItem('favorItem')) || []
     },
-    async getProduct(id) {
-      let response = await apiCustomerGetProduct(id)
+    async getProduct (id) {
+      const response = await apiCustomerGetProduct(id)
       if (!response.data.success) return
       response.data.product.num = null
       this.product = response.data.product
-      this.$refs["show-product-modal"].show()
+      this.$refs['show-product-modal'].show()
     },
-    goToProductDetail(id) {
+    goToProductDetail (id) {
       this.$router.push({ path: `/detail/${id}` }).catch(err => {
         console.log(err)
       })
     },
-    goToShoppingCart() {
-      this.$router.push("/customer_carts")
+    goToShoppingCart () {
+      this.$router.push('/customer_carts')
     },
-    setFavorItem(item) {
+    setFavorItem (item) {
       const setTitleToStorage = () => {
-        localStorage.setItem("favorItem", JSON.stringify(this.favorList))
+        localStorage.setItem('favorItem', JSON.stringify(this.favorList))
         this.getFavorTitleList()
       }
       const isFavored = el => el === item.title
@@ -217,18 +216,18 @@ export default {
       ) {
         this.favorList.push(item.title)
         setTitleToStorage()
-        this.$store.dispatch("alert/setMsgsAlert", {
-          msg: "已加入",
-          variant: "primary",
+        this.$store.dispatch('alert/setMsgsAlert', {
+          msg: '已加入',
+          variant: 'primary',
           id: Math.floor(new Date() / 1000)
         })
       } else {
-        let favorIndex = this.favorList.findIndex(isFavored)
+        const favorIndex = this.favorList.findIndex(isFavored)
         this.favorList.splice(favorIndex, 1)
         setTitleToStorage()
-        this.$store.dispatch("alert/setMsgsAlert", {
-          msg: "已移除",
-          variant: "warning",
+        this.$store.dispatch('alert/setMsgsAlert', {
+          msg: '已移除',
+          variant: 'warning',
           id: Math.floor(new Date() / 1000)
         })
       }

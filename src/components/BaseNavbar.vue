@@ -17,18 +17,18 @@
           src="https://image.flaticon.com/icons/svg/898/898143.svg"
           width="40px"
         >
-        <span class="nav-title text-primary">{{navbarTitle}}</span>
+        <span class="nav-title text-primary">{{ navbarTitle }}</span>
       </b-button>
 
-      <slot></slot>
-
+      <slot />
     </b-navbar>
   </div>
 </template>
 
 <script>
+/* eslint-disable vue/require-default-prop */
 export default {
-  name: "BaseNavbar",
+  name: 'BaseNavbar',
   props: {
     navbarTitle: { type: String },
     navbarHref: { type: String }

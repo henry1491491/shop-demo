@@ -4,7 +4,7 @@
       <b-col
         class="d-flex
         flex-column pl-5"
-        md=3
+        md="3"
       >
         <b>商品分類</b>
         <a href="#">原生蘭</a>
@@ -16,7 +16,7 @@
       <b-col
         class="d-flex
         flex-column pl-5"
-        md=3
+        md="3"
       >
         <b>問與答</b>
         <a href="#">最新公告</a>
@@ -27,7 +27,7 @@
       <b-col
         class="d-flex
         flex-column pl-5"
-        md=3
+        md="3"
       >
         <b>關於 Orchids 市集</b>
         <a href="#">關於原生蘭</a>
@@ -36,7 +36,7 @@
       <b-col
         class="d-flex
         flex-column pl-5"
-        md=3
+        md="3"
       >
         <b>追蹤 Orchids</b>
         <facebook />
@@ -47,7 +47,6 @@
 
     <hr class="my-2">
     <b-row>
-
       <b-col
         class="d-flex justify-content-start align-items-center pl-5"
         md="5"
@@ -63,23 +62,15 @@
           Orchids 蘭花購物網
         </h5>
       </b-col>
+      <b-col class="d-flex justify-content-end align-items-center">
+        <span class="mr-3">本網站僅供作業練習用</span>
+      </b-col>
     </b-row>
   </div>
 </template>
 
 <script>
 export default {
-  name: "TheCustomerFooter"
+  name: 'TheCustomerFooter'
 }
 </script>
-
-<style lang="scss">
-#views-thecustomer_footer {
-  a,
-  b,
-  .material-design-icon {
-    height: 1.6rem;
-  }
-}
-</style>
-

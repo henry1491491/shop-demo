@@ -199,11 +199,11 @@
       striped
     >
       <template v-slot:cell(origin_price)="data">
-        {{ data.item.origin_price | currency  }}
+        {{ data.item.origin_price | currency }}
       </template>
 
       <template v-slot:cell(price)="data">
-        {{ data.item.price | currency  }}
+        {{ data.item.price | currency }}
       </template>
 
       <template v-slot:cell(is_enabled)="data">
@@ -252,60 +252,60 @@ import {
   apiAdminGetProducts,
   apiAdminUploadFile,
   apiAdminDeleteProduct
-} from "../plugins/axios"
+} from '../plugins/axios'
 
 export default {
-  name: "TheDashboardProducts",
-  data() {
+  name: 'TheDashboardProducts',
+  data () {
     return {
       file: null,
       fields: [
         {
-          key: "category",
-          label: "分類"
+          key: 'category',
+          label: '分類'
         },
         {
-          key: "title",
-          label: "名稱"
+          key: 'title',
+          label: '名稱'
         },
         {
-          key: "origin_price",
-          label: "原價"
+          key: 'origin_price',
+          label: '原價'
         },
-        { key: "price", label: "售價" },
+        { key: 'price', label: '售價' },
         {
-          key: "is_enabled",
-          label: "是否啟用"
+          key: 'is_enabled',
+          label: '是否啟用'
         },
-        { key: "actions", label: "編輯" }
+        { key: 'actions', label: '編輯' }
       ],
       isNew: false,
       pagination: {},
       products: [],
       tempProduct: {
-        title: "",
-        category: "",
+        title: '',
+        category: '',
         origin_price: null,
         price: null,
-        unit: "",
-        image: "",
-        description: "",
-        content: "",
+        unit: '',
+        image: '',
+        description: '',
+        content: '',
         is_enabled: 1,
-        imageUrl: ""
+        imageUrl: ''
       }
     }
   },
   computed: {
-    isLoading() {
+    isLoading () {
       return this.$store.getters.isLoading
     }
   },
-  mounted() {
+  mounted () {
     this.getProducts()
   },
   methods: {
-    showEditProduct(isNew, item) {
+    showEditProduct (isNew, item) {
       if (isNew) {
         this.tempProduct = {}
         this.isNew = true
@@ -313,64 +313,63 @@ export default {
         this.tempProduct = Object.assign({}, item)
         this.isNew = false
       }
-      this.$refs["edit-product-modal"].show()
+      this.$refs['edit-product-modal'].show()
     },
-    cancerEditProduct() {
-      this.$refs["edit-product-modal"].hide()
+    cancerEditProduct () {
+      this.$refs['edit-product-modal'].hide()
     },
-    async deleteProduct(item) {
-      let response = await apiAdminDeleteProduct(item)
+    async deleteProduct (item) {
+      const response = await apiAdminDeleteProduct(item)
       if (!response.data.success) return
       this.getProducts()
-      this.$store.dispatch("alert/setMsgsAlert", {
+      this.$store.dispatch('alert/setMsgsAlert', {
         msg: response.data.message,
-        variant: "warning",
+        variant: 'warning',
         id: Math.floor(new Date() / 1000)
       })
     },
-    async updateProduct() {
-      let api = `/admin/product`
-      let httpMethod = "post"
+    async updateProduct () {
+      let api = '/admin/product'
+      let httpMethod = 'post'
       if (!this.isNew) {
         api = `/admin/product/${this.tempProduct.id}`
-        httpMethod = "put"
+        httpMethod = 'put'
       }
-      let response = await this.axios[httpMethod](api, {
+      const response = await this.axios[httpMethod](api, {
         data: this.tempProduct
       })
       if (!response.data.success) {
-        this.$refs["edit-product-modal"].hide()
+        this.$refs['edit-product-modal'].hide()
         this.getProducts(this.pagination.current_page)
-        this.$store.dispatch("alert/setMsgsAlert", {
+        this.$store.dispatch('alert/setMsgsAlert', {
           msg: response.data.message,
-          variant: "danger",
+          variant: 'danger',
           id: Math.floor(new Date() / 1000)
         })
       } else {
-        this.$refs["edit-product-modal"].hide()
+        this.$refs['edit-product-modal'].hide()
         this.getProducts(this.pagination.current_page)
-        console.log(response)
-        this.$store.dispatch("alert/setMsgsAlert", {
+        this.$store.dispatch('alert/setMsgsAlert', {
           msg: response.data.message,
-          variant: "primary",
+          variant: 'primary',
           id: Math.floor(new Date() / 1000)
         })
       }
     },
-    async uploadFile() {
-      const uploadedFile = this.$refs["file-input"].$refs.input.files[0]
+    async uploadFile () {
+      const uploadedFile = this.$refs['file-input'].$refs.input.files[0]
       const formData = new FormData()
-      formData.append("file-to-upload", uploadedFile)
-      let response = await apiAdminUploadFile(formData, {
+      formData.append('file-to-upload', uploadedFile)
+      const response = await apiAdminUploadFile(formData, {
         headers: {
-          "Content-Type": "multipart/form-data"
+          'Content-Type': 'multipart/form-data'
         }
       })
       if (!response.data.success) return
-      this.$set(this.tempProduct, "imageUrl", response.data.imageUrl)
+      this.$set(this.tempProduct, 'imageUrl', response.data.imageUrl)
     },
-    async getProducts(page = 1) {
-      let response = await apiAdminGetProducts(page)
+    async getProducts (page = 1) {
+      const response = await apiAdminGetProducts(page)
       if (!response.data.success) return
       this.products = response.data.products
       this.pagination = response.data.pagination
@@ -378,5 +377,3 @@ export default {
   }
 }
 </script>
-
-

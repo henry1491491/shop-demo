@@ -68,18 +68,17 @@
 
       <b-card>
         <b-card-text class="text-right m-0 p-1">
-          總計：{{Math.round(cartsTotal.total)}}
+          總計：{{ Math.round(cartsTotal.total) }}
         </b-card-text>
 
         <b-card-text
           v-show="cartsTotal.final_total !== cartsTotal.total"
           class="card-text-price text-right text-success m-0 p-1"
         >
-          折扣價：{{Math.round(cartsTotal.final_total)}}
+          折扣價：{{ Math.round(cartsTotal.final_total) }}
         </b-card-text>
 
         <b-input-group>
-
           <b-form-input
             v-model="coupon_code"
             placeholder="請輸入優惠碼"
@@ -116,7 +115,7 @@
     />
 
     <div v-if="!carts.length && loading">
-      <base-card-empty cardText="你的購物車沒有東西喔！" />
+      <base-card-empty card-text="你的購物車沒有東西喔！" />
 
       <div class="d-flex justify-content-end">
         <b-button
@@ -140,103 +139,100 @@
   </div>
 </template>
 
-
 <script>
-import { extend, validate } from "vee-validate"
+import { extend, validate } from 'vee-validate'
 
 import {
   apiCustomerRemoveCart,
   apiCustomerAddCouponCode
-} from "../plugins/axios"
+} from '../plugins/axios'
 
 export default {
-  name: "TheCustomerShoppingCartContent",
-  data() {
+  name: 'TheCustomerShoppingCartContent',
+  data () {
     return {
       cardfields: [
-        { key: "action", label: "" },
-        { key: "title", label: "品名" },
-        { key: "qty", label: "數量" },
-        { key: "price", label: "單價" }
+        { key: 'action', label: '' },
+        { key: 'title', label: '品名' },
+        { key: 'qty', label: '數量' },
+        { key: 'price', label: '單價' }
       ],
-      coupon_code: "",
+      coupon_code: '',
       loading: false
     }
   },
   computed: {
-    carts() {
+    carts () {
       return this.$store.state.customer.carts
     },
-    cartsTotal() {
+    cartsTotal () {
       return this.$store.state.customer.cartsTotal
     },
     status: {
-      get() {
+      get () {
         return this.$store.state.customer.status
       },
-      set(val) {
-        this.$store.commit("customer/SET_STATUS_LOADINGITEM", val)
+      set (val) {
+        this.$store.commit('customer/SET_STATUS_LOADINGITEM', val)
       }
     }
   },
-  mounted() {
+  mounted () {
     this.getCart()
   },
   methods: {
-    async getCart() {
+    async getCart () {
       this.loading = false
-      let result = await this.$store.dispatch("customer/getCart")
+      const result = await this.$store.dispatch('customer/getCart')
       if (!result.status) return
       this.loading = true
       if (!this.carts.length) {
         this.showEmptyCard = true
       }
     },
-    async addCouponCode(total, code) {
-      let validateStatus = await this.couponValidate(total, code)
+    async addCouponCode (total, code) {
+      const validateStatus = await this.couponValidate(total, code)
       if (!validateStatus) return
       const coupon = {
         code: this.coupon_code
       }
-      let response = await apiCustomerAddCouponCode({ data: coupon })
+      const response = await apiCustomerAddCouponCode({ data: coupon })
       if (!response.data.success) return
-      let result = await this.$store.dispatch("customer/getCart")
+      const result = await this.$store.dispatch('customer/getCart')
       if (!result.status) return
-      this.$store.dispatch("alert/setMsgsAlert", {
-        msg: "已輸入優惠碼",
-        variant: "primary",
+      this.$store.dispatch('alert/setMsgsAlert', {
+        msg: '已輸入優惠碼',
+        variant: 'primary',
         id: Math.floor(new Date() / 1000)
       })
     },
-    async couponValidate(total, code) {
-      //let isAnyCoupon = this.carts.some(el => el.coupon)
-      //if (isAnyCoupon) return
-      let couponPrice = parseInt(code.replace(/[a-z]/g, ""))
-      extend("coupon_can_use", total => {
+    async couponValidate (total, code) {
+      const couponPrice = parseInt(code.replace(/[a-z]/g, ''))
+      extend('coupon_can_use', total => {
         if (total > couponPrice) {
           return true
         }
-        return "您的金額不能使用這個優惠券喔"
+        return '您的金額不能使用這個優惠券喔'
       })
-      let isValidate = await validate(total, "coupon_can_use")
+      const isValidate = await validate(total, 'coupon_can_use')
       console.log(isValidate)
       if (!isValidate.errors.length) return true
-      this.$store.dispatch("alert/setMsgsAlert", {
+      this.$store.dispatch('alert/setMsgsAlert', {
         msg: `${isValidate.errors}`,
-        variant: "danger",
+        variant: 'danger',
         id: Math.floor(new Date() / 1000)
       })
     },
-    async removeCart(id) {
-      this.$store.commit("customer/SET_STATUS_LOADINGITEM", id)
+    async removeCart (id) {
+      this.$store.commit('customer/SET_STATUS_LOADINGITEM', id)
       let response = await apiCustomerRemoveCart(id)
       if (!response.data.success) return
-      response = await this.$store.dispatch("customer/getCart")
+      response = await this.$store.dispatch('customer/getCart')
       if (!response.status) return
-      this.$store.commit("customer/SET_STATUS_LOADINGITEM", "")
-      this.$store.dispatch("alert/setMsgsAlert", {
-        msg: "已刪除",
-        variant: "danger",
+      this.$store.commit('customer/SET_STATUS_LOADINGITEM', '')
+      this.$store.dispatch('alert/setMsgsAlert', {
+        msg: '已刪除',
+        variant: 'danger',
         id: Math.floor(new Date() / 1000)
       })
     }
@@ -245,10 +241,5 @@ export default {
 </script>
 
 <style lang="scss">
-#views-theshoppingcart_content {
-  .card {
-    height: 425px;
-  }
-}
-</style>
 
+</style>

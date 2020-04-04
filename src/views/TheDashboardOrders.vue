@@ -133,7 +133,7 @@
       stacked="md"
     >
       <template v-slot:cell(create_at)="data">
-        {{data.item.create_at | moment(`YYYY年M月D日 HH:mm:ss`)}}
+        {{ data.item.create_at | moment(`YYYY年M月D日 HH:mm:ss`) }}
       </template>
 
       <template v-slot:cell(user)="data">
@@ -151,11 +151,11 @@
       </template>
 
       <template v-slot:cell(total)="data">
-        {{data.item.total | currency}}
+        {{ data.item.total | currency }}
       </template>
 
       <template v-slot:cell(paid_date)="data">
-        {{data.item.paid_date | moment(`YYYY年M月D日 HH:mm:ss`)}}
+        {{ data.item.paid_date | moment(`YYYY年M月D日 HH:mm:ss`) }}
       </template>
 
       <template v-slot:cell(is_paid)="data">
@@ -182,7 +182,6 @@
           編輯
         </b-button>
       </template>
-
     </b-table>
 
     <b-pagination-default
@@ -193,32 +192,32 @@
 </template>
 
 <script>
-import { apiAdminGetOrders } from "../plugins/axios"
+import { apiAdminGetOrders } from '../plugins/axios'
 
 export default {
-  name: "TheDashboardOrders",
-  data() {
+  name: 'TheDashboardOrders',
+  data () {
     return {
       fields: [
         {
-          key: "create_at",
-          label: "購買時間"
+          key: 'create_at',
+          label: '購買時間'
         },
         {
-          key: "user",
-          label: "顧客資訊"
+          key: 'user',
+          label: '顧客資訊'
         },
         {
-          key: "products",
-          label: "購買款項"
+          key: 'products',
+          label: '購買款項'
         },
-        { key: "total", label: "應付金額" },
-        { key: "paid_date", label: "付款日期" },
+        { key: 'total', label: '應付金額' },
+        { key: 'paid_date', label: '付款日期' },
         {
-          key: "is_paid",
-          label: "是否付款"
+          key: 'is_paid',
+          label: '是否付款'
         },
-        { key: "actions", label: "編輯" }
+        { key: 'actions', label: '編輯' }
       ],
       isNew: false,
       orders: [],
@@ -226,8 +225,8 @@ export default {
       tempOrder: {
         create_at: null,
         is_paid: false,
-        message: "",
-        payment_method: "",
+        message: '',
+        payment_method: '',
         products: [],
         total: null,
         user: {}
@@ -235,15 +234,15 @@ export default {
     }
   },
   computed: {
-    isLoading() {
+    isLoading () {
       return this.$store.getters.isLoading
     }
   },
-  mounted() {
+  mounted () {
     this.getOrders()
   },
   methods: {
-    showEditOrder(isNew, item) {
+    showEditOrder (isNew, item) {
       if (isNew) {
         this.tempOrder = {}
         this.isNew = true
@@ -251,39 +250,39 @@ export default {
         this.tempOrder = Object.assign({}, item)
         this.isNew = false
       }
-      this.$refs["edit-order-modal"].show()
+      this.$refs['edit-order-modal'].show()
     },
-    cancerEditOrder() {
-      this.$refs["edit-order-modal"].hide()
+    cancerEditOrder () {
+      this.$refs['edit-order-modal'].hide()
     },
-    async getOrders(page = 1) {
-      let response = await apiAdminGetOrders(page)
+    async getOrders (page = 1) {
+      const response = await apiAdminGetOrders(page)
       if (!response.data.success) return
       this.orders = response.data.orders
       this.pagination = response.data.pagination
     },
-    async updateOrder() {
+    async updateOrder () {
       let api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/order`
-      let httpMethod = "post"
+      let httpMethod = 'post'
       if (!this.isNew) {
         api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/product/${this.tempOrder.id}`
-        httpMethod = "put"
+        httpMethod = 'put'
       }
-      let response = await this.axios[httpMethod](api, { data: this.tempOrder })
+      const response = await this.axios[httpMethod](api, { data: this.tempOrder })
       if (!response.data.success) {
-        this.$refs["edit-order-modal"].hide()
+        this.$refs['edit-order-modal'].hide()
         this.getOrders()
-        this.$store.dispatch("alert/setMsgsAlert", {
+        this.$store.dispatch('alert/setMsgsAlert', {
           msg: response.data.message,
-          variant: "danger",
+          variant: 'danger',
           id: Math.floor(new Date() / 1000)
         })
       } else {
-        this.$refs["edit-order-modal"].hide()
+        this.$refs['edit-order-modal'].hide()
         this.getOrders()
-        this.$store.dispatch("alert/setMsgsAlert", {
+        this.$store.dispatch('alert/setMsgsAlert', {
           msg: response.data.message,
-          variant: "primary",
+          variant: 'primary',
           id: Math.floor(new Date() / 1000)
         })
       }

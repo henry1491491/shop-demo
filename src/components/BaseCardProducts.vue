@@ -26,12 +26,12 @@
             variant="link"
             @click="getProduct(item.id)"
           >
-            {{item.title}}
+            {{ item.title }}
           </b-link>
         </b-card-title>
 
         <b-card-text class="base-card-text-details text-truncate mb-1">
-          {{item.description}}
+          {{ item.description }}
         </b-card-text>
 
         <b-card-text class="d-flex justify-content-start align-items-center">
@@ -79,37 +79,34 @@
 </template>
 
 <script>
+/* eslint-disable vue/require-default-prop */
 export default {
-  name: "BaseCardProducts",
+  name: 'BaseCardProducts',
   props: {
     item: { type: Object },
     favorList: { type: Array },
     status: { type: Object }
   },
   methods: {
-    setFavorTitle(item) {
-      this.$emit("set-favor-title", item)
+    setFavorTitle (item) {
+      this.$emit('set-favor-title', item)
     },
-    getProduct(id) {
-      this.$emit("get-product", id)
+    getProduct (id) {
+      this.$emit('get-product', id)
     },
-    async addToCart(id) {
-      this.$emit("add-to-cart", id)
+    async addToCart (id) {
+      this.$emit('add-to-cart', id)
       return true
     },
-    goToProductDetail(id) {
-      this.$emit("go-to-product-detail", id)
+    goToProductDetail (id) {
+      this.$emit('go-to-product-detail', id)
     },
-    async goToShoppingCart(id) {
-      let result = await this.addToCart(id)
+    async goToShoppingCart (id) {
+      const result = await this.addToCart(id)
       if (result) {
-        this.$emit("go-to-shopping-cart")
+        this.$emit('go-to-shopping-cart')
       }
     }
   }
 }
 </script>
-
-
-
-

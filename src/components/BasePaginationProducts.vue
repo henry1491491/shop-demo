@@ -15,22 +15,22 @@
 
 <script>
 export default {
-  name: "BasePaginationProducts",
+  name: 'BasePaginationProducts',
   props: {
-    rows: { type: Number },
-    perPage: { type: Number },
-    currentPage: { type: Number }
+    rows: { type: Number, default: 1 },
+    perPage: { type: Number, default: 12 },
+    currentPage: { type: Number, default: 1 }
   },
-  data() {
+  data () {
     return {
       propCurrentPage: this.currentPage
     }
   },
   methods: {
-    input(e) {
-      this.$emit("get-current-page", e)
+    input (e) {
+      this.$emit('get-current-page', e)
     },
-    change(e) {}
+    change (e) {}
   }
 }
 </script>

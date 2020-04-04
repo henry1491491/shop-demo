@@ -9,19 +9,18 @@
       fade
       show
     >
-      <span class="text-center">{{item.msg}}</span>
+      <span class="text-center">{{ item.msg }}</span>
     </b-alert>
   </div>
 </template>
 
 <script>
 export default {
-  name: "BaseAlert",
+  name: 'BaseAlert',
   computed: {
-    messages() {
+    messages () {
       return this.$store.state.alert.messages
     }
   }
 }
 </script>
-

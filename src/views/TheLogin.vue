@@ -14,7 +14,6 @@
             name="信箱"
             rules="required|email"
           >
-
             <b-form-group
               id="input-group-1"
               label-for="input-1"
@@ -25,8 +24,7 @@
                 :state="getValidationState(validationContext)"
                 placeholder="請輸入帳號"
                 required
-              >
-              </b-form-input>
+              />
               <b-form-invalid-feedback id="input-1-live-feedback">
                 {{ validationContext.errors[0] }}
               </b-form-invalid-feedback>
@@ -71,42 +69,39 @@
 </template>
 
 <script>
-import { apiLogLogin } from "../plugins/axios"
+import { apiLogLogin } from '../plugins/axios'
 
 export default {
-  data() {
+  data () {
     return {
       form: {
-        email: "",
-        name: "",
+        email: '',
+        name: '',
         food: null,
         checked: []
       },
       show: true,
       user: {
-        username: "",
-        password: ""
+        username: '',
+        password: ''
       }
     }
   },
   methods: {
-    getValidationState({ dirty, validated, valid = null }) {
+    getValidationState ({ dirty, validated, valid = null }) {
       return dirty || validated ? valid : null
     },
-    async signIn() {
-      let response = await apiLogLogin(this.user)
+    async signIn () {
+      const response = await apiLogLogin(this.user)
       if (!response.data.success) return
-      console.log(response)
-      this.$router.push("/admin/products")
-      this.$store.dispatch("alert/setMsgsAlert", {
+      this.$router.push('/admin/products')
+      this.$store.dispatch('alert/setMsgsAlert', {
         duration: 2000,
         id: Math.floor(new Date() / 1000),
         msg: response.data.message,
-        variant: "primary"
+        variant: 'primary'
       })
     }
   }
 }
 </script>
-
-

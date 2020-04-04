@@ -18,7 +18,7 @@
       class="text-left px-0"
       md="auto"
     >
-      {{stepsProps[0].text}}
+      {{ stepsProps[0].text }}
     </b-col>
     <b-col>
       <hr>
@@ -38,7 +38,7 @@
       class="text-left px-0"
       md="auto"
     >
-      {{stepsProps[1].text}}
+      {{ stepsProps[1].text }}
     </b-col>
     <b-col>
       <hr>
@@ -58,16 +58,25 @@
       class="text-left px-0"
       md="auto"
     >
-      {{stepsProps[2].text}}
+      {{ stepsProps[2].text }}
     </b-col>
   </b-row>
 </template>
 
 <script>
 export default {
-  name: "BaseStepper",
+  name: 'BaseStepper',
   props: {
-    stepsProps: { type: Array }
+    stepsProps: {
+      type: Array,
+      default: () => {
+        return [
+          { text: '購物車內容', finished: false },
+          { text: '訂購人資訊', finished: false },
+          { text: '確認付款', finished: false }
+        ]
+      }
+    }
   }
 }
 </script>

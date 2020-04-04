@@ -1,97 +1,97 @@
-import Vue from "vue"
-import VueRouter from "vue-router"
-import axios from "axios"
-import TheLogin from "../views/TheLogin.vue"
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import axios from 'axios'
+import TheLogin from '../views/TheLogin.vue'
 
-import TheDashboard from "../views/TheDashboard.vue"
-import TheDashboardProducts from "../views/TheDashboardProducts.vue"
-import TheDashboardOrders from "../views/TheDashboardOrders.vue"
-import TheDashboardCoupons from "../views/TheDashboardCoupons.vue"
+import TheDashboard from '../views/TheDashboard.vue'
+import TheDashboardProducts from '../views/TheDashboardProducts.vue'
+import TheDashboardOrders from '../views/TheDashboardOrders.vue'
+import TheDashboardCoupons from '../views/TheDashboardCoupons.vue'
 
-import TheCustomer from "../views/TheCustomer.vue"
-import TheCustomerCheckout from "../views/TheCustomerCheckout.vue"
-import TheCustomerContent from "../views/TheCustomerContent.vue"
-import TheCustomerContentFavor from "../views/TheCustomerContentFavor.vue"
-import TheCustomerContentCoupon from "../views/TheCustomerContentCoupon.vue"
-import TheCustomerContentProductDetail from "../views/TheCustomerContentProductDetail.vue"
-import TheCustomerShoppingCartContent from "../views/TheCustomerShoppingCartContent"
-import TheCustomerShoppingCartForm from "../views/TheCustomerShoppingCartForm.vue"
+import TheCustomer from '../views/TheCustomer.vue'
+import TheCustomerCheckout from '../views/TheCustomerCheckout.vue'
+import TheCustomerContent from '../views/TheCustomerContent.vue'
+import TheCustomerContentFavor from '../views/TheCustomerContentFavor.vue'
+import TheCustomerContentCoupon from '../views/TheCustomerContentCoupon.vue'
+import TheCustomerContentProductDetail from '../views/TheCustomerContentProductDetail.vue'
+import TheCustomerShoppingCartContent from '../views/TheCustomerShoppingCartContent'
+import TheCustomerShoppingCartForm from '../views/TheCustomerShoppingCartForm.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: "*",
-    redirect: "login"
+    path: '*',
+    redirect: 'login'
   },
   {
-    path: "/login",
-    name: "TheLogin",
+    path: '/login',
+    name: 'TheLogin',
     component: TheLogin
   },
   {
-    path: "/admin",
-    name: "TheDashboard",
+    path: '/admin',
+    name: 'TheDashboard',
     component: TheDashboard,
     children: [
       {
-        path: "products",
-        name: "TheDashboardProducts",
+        path: 'products',
+        name: 'TheDashboardProducts',
         component: TheDashboardProducts,
         meta: { requiresAuth: true }
       },
       {
-        path: "orders",
-        name: "TheDashboardOrders",
+        path: 'orders',
+        name: 'TheDashboardOrders',
         component: TheDashboardOrders,
         meta: { requiresAuth: true }
       },
       {
-        path: "coupons",
-        name: "TheDashboardCoupons",
+        path: 'coupons',
+        name: 'TheDashboardCoupons',
         component: TheDashboardCoupons,
         meta: { requiresAuth: true }
       }
     ]
   },
   {
-    path: "/",
-    name: "TheCustomer",
+    path: '/',
+    name: 'TheCustomer',
     component: TheCustomer,
     children: [
       {
-        path: "",
-        name: "TheCustomerContent",
+        path: '',
+        name: 'TheCustomerContent',
         component: TheCustomerContent
       },
       {
-        path: "detail/:productId",
-        name: "TheCustomerContentProductDetail",
+        path: 'detail/:productId',
+        name: 'TheCustomerContentProductDetail',
         component: TheCustomerContentProductDetail
       },
       {
-        path: "favor",
-        name: "TheCustomerContentFavor",
+        path: 'favor',
+        name: 'TheCustomerContentFavor',
         component: TheCustomerContentFavor
       },
       {
-        path: "coupon",
-        name: "TheCustomerContentCoupon",
+        path: 'coupon',
+        name: 'TheCustomerContentCoupon',
         component: TheCustomerContentCoupon
       },
       {
-        path: "customer_carts",
-        name: "TheCustomerShoppingCartContent",
+        path: 'customer_carts',
+        name: 'TheCustomerShoppingCartContent',
         component: TheCustomerShoppingCartContent
       },
       {
-        path: "customer_carts_form",
-        name: "TheCustomerShoppingCartForm",
+        path: 'customer_carts_form',
+        name: 'TheCustomerShoppingCartForm',
         component: TheCustomerShoppingCartForm
       },
       {
-        path: "customer_checkout/:orderId",
-        name: "TheCustomerCheckout",
+        path: 'customer_checkout/:orderId',
+        name: 'TheCustomerCheckout',
         component: TheCustomerCheckout
       }
     ]
@@ -99,7 +99,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: "history",
+  mode: 'history',
   base: process.env.BASE_URL,
   routes
 })
@@ -112,7 +112,7 @@ router.beforeEach((to, from, next) => {
         next()
       } else {
         next({
-          path: "/login"
+          path: '/login'
         })
       }
     })

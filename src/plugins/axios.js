@@ -1,7 +1,7 @@
-import Vue from "vue"
-import axios from "axios"
-import VueAxios from "vue-axios"
-import store from "../store"
+import Vue from 'vue'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+import store from '../store'
 
 Vue.use(VueAxios, axios)
 
@@ -23,12 +23,12 @@ const NotLoadingRequest = axios.create({
 })
 
 // Log
-export const apiLogLogin = data => LogRequest.post("/admin/signin", data)
-export const apiLogLogout = () => LogRequest.post("/logout")
+export const apiLogLogin = data => LogRequest.post('/admin/signin', data)
+export const apiLogLogout = () => LogRequest.post('/logout')
 
 // Admin
 export const apiAdminUploadFile = (data, header) =>
-  DefaultRequest.post("/admin/upload", data, header)
+  DefaultRequest.post('/admin/upload', data, header)
 
 // Customer
 export const apiAdminGetProducts = data =>
@@ -40,8 +40,9 @@ export const apiAdminDeleteProduct = data =>
 export const apiAdminGetOrders = data =>
   DefaultRequest.get(`/admin/orders?page=${data}`)
 
-export const apiAdminGetCoupons = data =>
-  DefaultRequest.get(`/admin/coupons?page=${data}`)
+export const apiAdminGetCoupons = data => {
+  return DefaultRequest.get(`/admin/coupons?page=${data}`)
+}
 
 export const apiAdminDeleteCoupons = data =>
   DefaultRequest.delete(`/admin/coupon/${data.id}`)
@@ -57,22 +58,22 @@ export const apiCustomerRemoveCart = data =>
   NotLoadingRequest.delete(`/cart/${data}`)
 
 export const apiCustomerAddCouponCode = data =>
-  DefaultRequest.post(`/coupon`, data)
+  DefaultRequest.post('/coupon', data)
 
 export const apiCustomerCreateOrder = data =>
-  DefaultRequest.post(`/order`, data)
+  DefaultRequest.post('/order', data)
 
 // store / customer
 
-export const apiGetCart = () => NotLoadingRequest.get(`/cart`)
+export const apiGetCart = () => NotLoadingRequest.get('/cart')
 
-export const apiAddToCart = data => NotLoadingRequest.post(`/cart`, data)
+export const apiAddToCart = data => NotLoadingRequest.post('/cart', data)
 
-export const getProductsAll = () => DefaultRequest.get(`/products/all`)
+export const getProductsAll = () => DefaultRequest.get('/products/all')
 
 DefaultRequest.interceptors.request.use(
   config => {
-    store.dispatch("setLoading", true)
+    store.dispatch('setLoading', true)
     return config
   },
   error => {
@@ -82,11 +83,11 @@ DefaultRequest.interceptors.request.use(
 
 DefaultRequest.interceptors.response.use(
   response => {
-    store.dispatch("setLoading", false)
+    store.dispatch('setLoading', false)
     return response
   },
   error => {
-    store.dispatch("setLoading", false)
+    store.dispatch('setLoading', false)
     return Promise.reject(error)
   }
 )

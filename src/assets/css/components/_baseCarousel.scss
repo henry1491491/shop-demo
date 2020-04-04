@@ -5,7 +5,8 @@ $items-gutters: 16px;
 $item-side-width: calc((100% - 600px - $items-gutters * 2) / 2);
 $item-middle-width: 600px;
 @mixin btn {
-  background-color: #12343b;
+  background-color: #c89666;
+  cursor: pointer;
   height: 60px;
   opacity: 0.3;
   position: absolute;
@@ -53,8 +54,7 @@ $item-middle-width: 600px;
           width: $item-middle-width;
         }
         .img-content {
-          top: 10%;
-          left: 10%;
+         padding:1rem;
         }
       }
     }

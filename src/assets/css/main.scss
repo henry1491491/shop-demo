@@ -1,6 +1,11 @@
+// base
+@import "./base/basic";
+
 // components
+@import "./components/baseCardEmpty";
 @import "./components/baseCardProducts";
 @import "./components/baseCarousel";
+@import "./components/baseSidebar";
 @import "./components/baseStepper";
 
 // views
@@ -20,3 +25,4 @@
 
 // venders
 @import "./venders/bootstrap";
+

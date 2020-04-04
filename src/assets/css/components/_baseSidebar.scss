@@ -1,0 +1,14 @@
+#components-base_sidebar {
+  .list-group > .list-group-item {
+    border:none;
+  }
+  .list-group > .active {
+    background:#fff;
+    color:#12343b;
+    font-size: 1.2rem;
+    font-weight:bold;
+  }
+  .list-group > button {
+    outline:none;
+  }
+}

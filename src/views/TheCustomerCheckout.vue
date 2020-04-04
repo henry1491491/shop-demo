@@ -18,8 +18,10 @@
                   <b-th
                     colspan="2"
                     class="text-right mr-3"
-                  >單價</b-th>
-                  <b-th></b-th>
+                  >
+                    單價
+                  </b-th>
+                  <b-th />
                 </b-tr>
               </b-thead>
 
@@ -33,19 +35,25 @@
                   <b-td
                     colspan="2"
                     class="text-right mr-3"
-                  >{{ item.final_total }}</b-td>
-                  <b-td></b-td>
+                  >
+                    {{ item.final_total }}
+                  </b-td>
+                  <b-td />
                 </b-tr>
               </b-tbody>
 
               <b-tfoot>
                 <b-tr>
-                  <b-td colspan="2">總計：</b-td>
+                  <b-td colspan="2">
+                    總計：
+                  </b-td>
                   <b-td
                     colspan="2"
                     class="text-right mr-3"
-                  >{{ order.total }}</b-td>
-                  <b-td></b-td>
+                  >
+                    {{ order.total }}
+                  </b-td>
+                  <b-td />
                 </b-tr>
               </b-tfoot>
             </b-table-simple>
@@ -60,7 +68,9 @@
             >
               <b-thead head-variant="light">
                 <b-tr>
-                  <b-th colspan="2">收件人資訊</b-th>
+                  <b-th colspan="2">
+                    收件人資訊
+                  </b-th>
                 </b-tr>
               </b-thead>
               <b-tbody>
@@ -109,40 +119,39 @@
   </div>
 </template>
 
-
 <script>
-import { apiCustomerGetOrder, apiCustomerPayOrder } from "../plugins/axios"
+import { apiCustomerGetOrder, apiCustomerPayOrder } from '../plugins/axios'
 
 export default {
-  name: "TheDashboardCustomerCheckout",
-  data() {
+  name: 'TheDashboardCustomerCheckout',
+  data () {
     return {
       order: {
         user: {}
       },
-      orderId: ""
+      orderId: ''
     }
   },
-  mounted() {
+  mounted () {
     this.getOrder()
   },
   methods: {
-    async getOrder() {
+    async getOrder () {
       this.orderId = this.$route.params.orderId
-      let response = await apiCustomerGetOrder(this.orderId)
+      const response = await apiCustomerGetOrder(this.orderId)
       if (!response.data.success) return
       this.order = response.data.order
-      this.$store.commit("customer/SET_ORDER", this.order)
+      this.$store.commit('customer/SET_ORDER', this.order)
       return this.order
     },
-    async payOrder() {
-      let response = await apiCustomerPayOrder(this.orderId)
+    async payOrder () {
+      const response = await apiCustomerPayOrder(this.orderId)
       if (!response.data.success) return
-      let result = await this.$store.dispatch("alert/setMsgsAlert", {
+      const result = await this.$store.dispatch('alert/setMsgsAlert', {
         duration: 2000,
         id: Math.floor(new Date() / 1000),
         msg: response.data.message,
-        variant: "warning"
+        variant: 'warning'
       })
       console.log(result)
       if (!result.status) return
