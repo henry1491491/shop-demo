@@ -98,7 +98,7 @@ export default {
         this.$router.push('/admin/products')
         this.$store.dispatch('alert/setMsgsAlert', this._$alert(response.data.message))
       } catch (e) {
-        console.log(e)
+        throw new Error(e)
       }
     }
   }
