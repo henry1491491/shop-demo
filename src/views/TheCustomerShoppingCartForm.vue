@@ -179,12 +179,14 @@ export default {
   },
   methods: {
     async createOrder () {
-      const order = this.form
-      console.log(order)
-      const response = await apiCustomerCreateOrder({ data: order })
-      console.log(response)
-      if (!response.data.success) return
-      this.$router.push(`/customer_checkout/${response.data.orderId}`)
+      try {
+        const order = this.form
+        const response = await apiCustomerCreateOrder({ data: order })
+        if (!response.data.success) return
+        this.$router.push(`/customer_checkout/${response.data.orderId}`)
+      } catch (e) {
+        console.log(e)
+      }
     },
     getValidationState ({ dirty, validated, valid = null }) {
       return dirty || validated ? valid : null

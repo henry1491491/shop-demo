@@ -2,7 +2,7 @@ $container-width: 100%;
 $item-height: 300px;
 $item-bg-color: lightgray;
 $items-gutters: 16px;
-$item-side-width: calc((100% - 600px - $items-gutters * 2) / 2);
+$item-side-width: calc((100% - 568px) / 2);
 $item-middle-width: 600px;
 @mixin btn {
   background-color: #c89666;

@@ -256,35 +256,35 @@ export default {
       this.$refs['edit-order-modal'].hide()
     },
     async getOrders (page = 1) {
-      const response = await apiAdminGetOrders(page)
-      if (!response.data.success) return
-      this.orders = response.data.orders
-      this.pagination = response.data.pagination
+      try {
+        const response = await apiAdminGetOrders(page)
+        if (!response.data.success) return
+        this.orders = response.data.orders
+        this.pagination = response.data.pagination
+      } catch (e) {
+        console.log(e)
+      }
     },
     async updateOrder () {
-      let api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/order`
-      let httpMethod = 'post'
-      if (!this.isNew) {
-        api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/product/${this.tempOrder.id}`
-        httpMethod = 'put'
-      }
-      const response = await this.axios[httpMethod](api, { data: this.tempOrder })
-      if (!response.data.success) {
-        this.$refs['edit-order-modal'].hide()
-        this.getOrders()
-        this.$store.dispatch('alert/setMsgsAlert', {
-          msg: response.data.message,
-          variant: 'danger',
-          id: Math.floor(new Date() / 1000)
-        })
-      } else {
-        this.$refs['edit-order-modal'].hide()
-        this.getOrders()
-        this.$store.dispatch('alert/setMsgsAlert', {
-          msg: response.data.message,
-          variant: 'primary',
-          id: Math.floor(new Date() / 1000)
-        })
+      try {
+        let api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/order`
+        let httpMethod = 'post'
+        if (!this.isNew) {
+          api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/product/${this.tempOrder.id}`
+          httpMethod = 'put'
+        }
+        const response = await this.axios[httpMethod](api, { data: this.tempOrder })
+        if (!response.data.success) {
+          this.$refs['edit-order-modal'].hide()
+          this.getOrders()
+          this.$store.dispatch('alert/setMsgsAlert', this._$alert(response.data.message, 'danger'))
+        } else {
+          this.$refs['edit-order-modal'].hide()
+          this.getOrders()
+          this.$store.dispatch('alert/setMsgsAlert', this._$alert(response.data.message))
+        }
+      } catch (e) {
+        console.log(e)
       }
     }
   }

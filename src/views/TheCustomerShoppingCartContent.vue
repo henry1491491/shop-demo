@@ -182,64 +182,64 @@ export default {
   },
   methods: {
     async getCart () {
-      this.loading = false
-      const result = await this.$store.dispatch('customer/getCart')
-      if (!result.status) return
-      this.loading = true
-      if (!this.carts.length) {
-        this.showEmptyCard = true
+      try {
+        this.loading = false
+        const result = await this.$store.dispatch('customer/getCart')
+        if (!result.status) return
+        this.loading = true
+        if (!this.carts.length) {
+          this.showEmptyCard = true
+        }
+      } catch (e) {
+        console.log(e)
       }
     },
     async addCouponCode (total, code) {
-      const validateStatus = await this.couponValidate(total, code)
-      if (!validateStatus) return
-      const coupon = {
-        code: this.coupon_code
+      try {
+        const validateStatus = await this.couponValidate(total, code)
+        if (!validateStatus) return
+        const coupon = {
+          code: this.coupon_code
+        }
+        const response = await apiCustomerAddCouponCode({ data: coupon })
+        if (!response.data.success) return
+        const result = await this.$store.dispatch('customer/getCart')
+        if (!result.status) return
+        this.$store.dispatch('alert/setMsgsAlert', this._$alert('已輸入優惠碼'))
+      } catch (e) {
+        console.log(e)
       }
-      const response = await apiCustomerAddCouponCode({ data: coupon })
-      if (!response.data.success) return
-      const result = await this.$store.dispatch('customer/getCart')
-      if (!result.status) return
-      this.$store.dispatch('alert/setMsgsAlert', {
-        msg: '已輸入優惠碼',
-        variant: 'primary',
-        id: Math.floor(new Date() / 1000)
-      })
     },
     async couponValidate (total, code) {
-      const couponPrice = parseInt(code.replace(/[a-z]/g, ''))
-      extend('coupon_can_use', total => {
-        if (total > couponPrice) {
-          return true
-        }
-        return '您的金額不能使用這個優惠券喔'
-      })
-      const isValidate = await validate(total, 'coupon_can_use')
-      console.log(isValidate)
-      if (!isValidate.errors.length) return true
-      this.$store.dispatch('alert/setMsgsAlert', {
-        msg: `${isValidate.errors}`,
-        variant: 'danger',
-        id: Math.floor(new Date() / 1000)
-      })
+      try {
+        const couponPrice = parseInt(code.replace(/[a-z]/g, ''))
+        extend('coupon_can_use', total => {
+          if (total > couponPrice) {
+            return true
+          }
+          return '您的金額不能使用這個優惠券喔'
+        })
+        const isValidate = await validate(total, 'coupon_can_use')
+        console.log(isValidate)
+        if (!isValidate.errors.length) return true
+        this.$store.dispatch('alert/setMsgsAlert', this._$alert(isValidate.errors, 'danger'))
+      } catch (e) {
+        console.log(e)
+      }
     },
     async removeCart (id) {
-      this.$store.commit('customer/SET_STATUS_LOADINGITEM', id)
-      let response = await apiCustomerRemoveCart(id)
-      if (!response.data.success) return
-      response = await this.$store.dispatch('customer/getCart')
-      if (!response.status) return
-      this.$store.commit('customer/SET_STATUS_LOADINGITEM', '')
-      this.$store.dispatch('alert/setMsgsAlert', {
-        msg: '已刪除',
-        variant: 'danger',
-        id: Math.floor(new Date() / 1000)
-      })
+      try {
+        this.$store.commit('customer/SET_STATUS_LOADINGITEM', id)
+        let response = await apiCustomerRemoveCart(id)
+        if (!response.data.success) return
+        response = await this.$store.dispatch('customer/getCart')
+        if (!response.status) return
+        this.$store.commit('customer/SET_STATUS_LOADINGITEM', '')
+        this.$store.dispatch('alert/setMsgsAlert', this._$alert('已刪除', 'danger'))
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 }
 </script>
-
-<style lang="scss">
-
-</style>

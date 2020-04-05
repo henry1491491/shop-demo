@@ -4,6 +4,7 @@
     <hr class="m-1">
     <base-carousel
       v-show="$route.path === '/'"
+      :auto-play="carouselAutoPlay"
       :items="carouselItems"
     />
     <b-container>

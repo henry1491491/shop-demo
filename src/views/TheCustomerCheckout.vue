@@ -137,25 +137,27 @@ export default {
   },
   methods: {
     async getOrder () {
-      this.orderId = this.$route.params.orderId
-      const response = await apiCustomerGetOrder(this.orderId)
-      if (!response.data.success) return
-      this.order = response.data.order
-      this.$store.commit('customer/SET_ORDER', this.order)
-      return this.order
+      try {
+        this.orderId = this.$route.params.orderId
+        const response = await apiCustomerGetOrder(this.orderId)
+        this.order = response.data.order
+        this.$store.commit('customer/SET_ORDER', this.order)
+        return this.order
+      } catch (e) {
+        console.log(e)
+      }
     },
     async payOrder () {
-      const response = await apiCustomerPayOrder(this.orderId)
-      if (!response.data.success) return
-      const result = await this.$store.dispatch('alert/setMsgsAlert', {
-        duration: 2000,
-        id: Math.floor(new Date() / 1000),
-        msg: response.data.message,
-        variant: 'warning'
-      })
-      console.log(result)
-      if (!result.status) return
-      this.getOrder()
+      try {
+        const response = await apiCustomerPayOrder(this.orderId)
+        if (!response) return
+        const result = await this.$store.dispatch('alert/setMsgsAlert', this._$alert(response.data.message, 'warning')
+        )
+        if (!result.status) return
+        this.getOrder()
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 }

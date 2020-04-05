@@ -241,13 +241,15 @@ export default {
   },
   methods: {
     async addToCart (id, qty = 1) {
-      const result = await this.$store.dispatch('customer/addToCart', {
-        id,
-        qty: 1
-      })
-      if (!result.msg) return
-      this.$refs['show-product-modal'].hide()
-      this.$store.dispatch('alert/setMsgsAlert', result)
+      try {
+        const result = await this.$store.dispatch('customer/addToCart', {
+          id,
+          qty: 1
+        })
+        if (!result.msg) return
+        this.$refs['show-product-modal'].hide()
+        this.$store.dispatch('alert/setMsgsAlert', result)
+      } catch (e) { console.log(e) }
     },
     filterHandler (item) {
       if (item.type === 'category' && item.value === '全部') {
@@ -278,11 +280,15 @@ export default {
       this.favorList = JSON.parse(localStorage.getItem('favorItem')) || []
     },
     async getProduct (id) {
-      const response = await apiCustomerGetProduct(id)
-      if (!response.data.success) return
-      response.data.product.num = null
-      this.product = response.data.product
-      this.$refs['show-product-modal'].show()
+      try {
+        const response = await apiCustomerGetProduct(id)
+        if (!response.data.success) return
+        response.data.product.num = null
+        this.product = response.data.product
+        this.$refs['show-product-modal'].show()
+      } catch (e) {
+        console.log(e)
+      }
     },
     goToProductDetail (id) {
       this.$router.push({ path: `/detail/${id}` }).catch(err => {
@@ -297,11 +303,7 @@ export default {
       this.priceRadiosSelected = ''
       this.$store.commit('customer/SET_SORT_TITLE', '全部')
       this.filteredData(this.productsAll)
-      this.$store.dispatch('alert/setMsgsAlert', {
-        msg: '已清除篩選',
-        variant: 'primary',
-        id: Math.floor(new Date() / 1000)
-      })
+      this.$store.dispatch('alert/setMsgsAlert', this._$alert('已清除篩選'))
     },
     setFavorItem (item) {
       const setTitleToStorage = () => {
@@ -315,20 +317,12 @@ export default {
       ) {
         this.favorList.push(item.title)
         setTitleToStorage()
-        this.$store.dispatch('alert/setMsgsAlert', {
-          msg: '已加入',
-          variant: 'primary',
-          id: Math.floor(new Date() / 1000)
-        })
+        this.$store.dispatch('alert/setMsgsAlert', this._$alert('已加入'))
       } else {
         const favorIndex = this.favorList.findIndex(isFavored)
         this.favorList.splice(favorIndex, 1)
         setTitleToStorage()
-        this.$store.dispatch('alert/setMsgsAlert', {
-          msg: '已移除',
-          variant: 'warning',
-          id: Math.floor(new Date() / 1000)
-        })
+        this.$store.dispatch('alert/setMsgsAlert', this._$alert('已移除', 'warning'))
       }
     },
     sortByPrice (item) {

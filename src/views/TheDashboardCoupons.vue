@@ -227,51 +227,48 @@ export default {
       this.$refs['edit-coupon-modal'].hide()
     },
     async deleteCoupon (item) {
-      const response = await apiAdminDeleteCoupons(item)
-      if (!response.data.success) return
-      this.getCoupons()
-      this.$store.dispatch('alert/setMsgsAlert', {
-        duration: 2000,
-        id: Math.floor(new Date() / 1000),
-        msg: response.data.messages,
-        variant: 'danger'
-      })
+      try {
+        const response = await apiAdminDeleteCoupons(item)
+        if (!response.data.success) return
+        this.getCoupons()
+        this.$store.dispatch('alert/setMsgsAlert', this._$alert(response.data.message, 'danger'))
+      } catch (e) {
+        console.log(e)
+      }
     },
     async updateCoupon () {
-      let api = '/admin/coupon'
-      let httpMethod = 'post'
-      if (!this.isNew) {
-        api = `/admin/coupon/${this.tempCoupon.id}`
-        httpMethod = 'put'
-      }
-      const response = await this.axios[httpMethod](api, {
-        data: this.tempCoupon
-      })
-      if (!response.data.success) {
-        this.$refs['edit-coupon-modal'].hide()
-        this.getCoupons()
-        this.$store.dispatch('alert/setMsgsAlert', {
-          duration: 2000,
-          id: Math.floor(new Date() / 1000),
-          msg: response.data.message,
-          variant: 'warning'
+      try {
+        let api = '/admin/coupon'
+        let httpMethod = 'post'
+        if (!this.isNew) {
+          api = `/admin/coupon/${this.tempCoupon.id}`
+          httpMethod = 'put'
+        }
+        const response = await this.axios[httpMethod](api, {
+          data: this.tempCoupon
         })
-      } else {
-        this.$refs['edit-coupon-modal'].hide()
-        this.getCoupons()
-        this.$store.dispatch('alert/setMsgsAlert', {
-          duration: 2000,
-          id: Math.floor(new Date() / 1000),
-          msg: response.data.message,
-          variant: 'primary'
-        })
+        if (!response.data.success) {
+          this.$refs['edit-coupon-modal'].hide()
+          this.getCoupons()
+          this.$store.dispatch('alert/setMsgsAlert', this._$alert(response.data.message, 'warning'))
+        } else {
+          this.$refs['edit-coupon-modal'].hide()
+          this.getCoupons()
+          this.$store.dispatch('alert/setMsgsAlert', this._$alert(response.data.message))
+        }
+      } catch (e) {
+        console.log(e)
       }
     },
     async getCoupons (page = 1) {
-      const response = await apiAdminGetCoupons(page)
-      if (!response.data.success) return
-      this.coupons = response.data.coupons
-      this.pagination = response.data.pagination
+      try {
+        const response = await apiAdminGetCoupons(page)
+        if (!response.data.success) return
+        this.coupons = response.data.coupons
+        this.pagination = response.data.pagination
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 }

@@ -187,14 +187,15 @@
           >
             <span class="mr-2">總計：{{ cartsTotal.total }}</span>
             <span class="text-danger h5">折扣價：{{ cartsTotal.final_total }}</span>
-            <b-button
-              class="float-right"
-              href="/customer_carts"
-              size="sm"
-              variant="danger"
-            >
-              到購物車
-            </b-button>
+            <router-link to="/customer_carts">
+              <b-button
+                class="float-right"
+                size="sm"
+                variant="danger"
+              >
+                到購物車
+              </b-button>
+            </router-link>
           </div>
         </template>
       </b-modal>
@@ -374,20 +375,23 @@ export default {
   },
   methods: {
     async removeCart (id) {
-      this.$store.commit('customer/SET_STATUS_LOADINGITEM', id)
-      let response = await apiCustomerRemoveCart(id)
-      if (!response.data.success) return
-      response = await this.$store.dispatch('customer/getCart')
-      if (!response.status) return
-      this.$store.commit('customer/SET_STATUS_LOADINGITEM', '')
-      this.$store.dispatch('alert/setMsgsAlert', {
-        msg: '已刪除',
-        variant: 'danger',
-        id: Math.floor(new Date() / 1000)
-      })
+      try {
+        this.$store.commit('customer/SET_STATUS_LOADINGITEM', id)
+        let response = await apiCustomerRemoveCart(id)
+        if (!response.data.success) return
+        response = await this.$store.dispatch('customer/getCart')
+        if (!response.status) return
+        this.$store.commit('customer/SET_STATUS_LOADINGITEM', '')
+        this.$store.dispatch('alert/setMsgsAlert', this._$alert('已刪除', 'danger'))
+      } catch (e) {
+        console.log(e)
+      }
     },
     showCarts () {
       this.$refs['show-cart-modal'].show()
+      window.setTimeout(() => {
+        this.$refs['show-cart-modal'].hide()
+      }, 1000)
     },
     goToCoupon () {
       this.$router.push('/coupon')

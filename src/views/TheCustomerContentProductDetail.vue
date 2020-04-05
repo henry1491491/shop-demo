@@ -266,18 +266,26 @@ export default {
   },
   methods: {
     async addToCart (id, qty = 1) {
-      const result = await this.$store.dispatch('customer/addToCart', {
-        id,
-        qty: 1
-      })
-      if (!result.msg) return
-      this.$store.dispatch('alert/setMsgsAlert', result)
+      try {
+        const result = await this.$store.dispatch('customer/addToCart', {
+          id,
+          qty: 1
+        })
+        if (!result.msg) return
+        this.$store.dispatch('alert/setMsgsAlert', result)
+      } catch (e) {
+        console.log(e)
+      }
     },
     async getProduct (id) {
-      const response = await apiCustomerGetProduct(id)
-      if (!response.data.success) return
-      response.data.product.num = null
-      this.product = response.data.product
+      try {
+        const response = await apiCustomerGetProduct(id)
+        if (!response.data.success) return
+        response.data.product.num = null
+        this.product = response.data.product
+      } catch (e) {
+        console.log(e)
+      }
     },
     getFavorTitleList () {
       this.favorList = JSON.parse(localStorage.getItem('favorItem')) || []
@@ -307,20 +315,12 @@ export default {
         this.favorList.some(isFavored) === false
       ) {
         this.favorList.push(title)
-        this.$store.dispatch('alert/setMsgsAlert', {
-          msg: '已加入',
-          variant: 'primary',
-          id: Math.floor(new Date() / 1000)
-        })
+        this.$store.dispatch('alert/setMsgsAlert', this._$alert('已加入'))
         setTitleToStorage()
       } else {
         const favorIndex = this.favorList.findIndex(isFavored)
         this.favorList.splice(favorIndex, 1)
-        this.$store.dispatch('alert/setMsgsAlert', {
-          msg: '已移除',
-          variant: 'warning',
-          id: Math.floor(new Date() / 1000)
-        })
+        this.$store.dispatch('alert/setMsgsAlert', this._$alert('已移除', 'warning'))
         setTitleToStorage()
       }
     }

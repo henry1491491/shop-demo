@@ -319,60 +319,64 @@ export default {
       this.$refs['edit-product-modal'].hide()
     },
     async deleteProduct (item) {
-      const response = await apiAdminDeleteProduct(item)
-      if (!response.data.success) return
-      this.getProducts()
-      this.$store.dispatch('alert/setMsgsAlert', {
-        msg: response.data.message,
-        variant: 'warning',
-        id: Math.floor(new Date() / 1000)
-      })
+      try {
+        const response = await apiAdminDeleteProduct(item)
+        if (!response.data.success) return
+        this.getProducts()
+        this.$store.dispatch('alert/setMsgsAlert', this._$alert(response.data.message, 'warning'))
+      } catch (e) {
+        console.log(e)
+      }
     },
     async updateProduct () {
-      let api = '/admin/product'
-      let httpMethod = 'post'
-      if (!this.isNew) {
-        api = `/admin/product/${this.tempProduct.id}`
-        httpMethod = 'put'
-      }
-      const response = await this.axios[httpMethod](api, {
-        data: this.tempProduct
-      })
-      if (!response.data.success) {
-        this.$refs['edit-product-modal'].hide()
-        this.getProducts(this.pagination.current_page)
-        this.$store.dispatch('alert/setMsgsAlert', {
-          msg: response.data.message,
-          variant: 'danger',
-          id: Math.floor(new Date() / 1000)
+      try {
+        let api = '/admin/product'
+        let httpMethod = 'post'
+        if (!this.isNew) {
+          api = `/admin/product/${this.tempProduct.id}`
+          httpMethod = 'put'
+        }
+        const response = await this.axios[httpMethod](api, {
+          data: this.tempProduct
         })
-      } else {
-        this.$refs['edit-product-modal'].hide()
-        this.getProducts(this.pagination.current_page)
-        this.$store.dispatch('alert/setMsgsAlert', {
-          msg: response.data.message,
-          variant: 'primary',
-          id: Math.floor(new Date() / 1000)
-        })
+        if (!response.data.success) {
+          this.$refs['edit-product-modal'].hide()
+          this.getProducts(this.pagination.current_page)
+          this.$store.dispatch('alert/setMsgsAlert', this._$alert(response.data.message, 'danger'))
+        } else {
+          this.$refs['edit-product-modal'].hide()
+          this.getProducts(this.pagination.current_page)
+          this.$store.dispatch('alert/setMsgsAlert', this._$alert(response.data.message))
+        }
+      } catch (e) {
+        console.log(e)
       }
     },
     async uploadFile () {
-      const uploadedFile = this.$refs['file-input'].$refs.input.files[0]
-      const formData = new FormData()
-      formData.append('file-to-upload', uploadedFile)
-      const response = await apiAdminUploadFile(formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-      if (!response.data.success) return
-      this.$set(this.tempProduct, 'imageUrl', response.data.imageUrl)
+      try {
+        const uploadedFile = this.$refs['file-input'].$refs.input.files[0]
+        const formData = new FormData()
+        formData.append('file-to-upload', uploadedFile)
+        const response = await apiAdminUploadFile(formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        if (!response.data.success) return
+        this.$set(this.tempProduct, 'imageUrl', response.data.imageUrl)
+      } catch (e) {
+        console.log(e)
+      }
     },
     async getProducts (page = 1) {
-      const response = await apiAdminGetProducts(page)
-      if (!response.data.success) return
-      this.products = response.data.products
-      this.pagination = response.data.pagination
+      try {
+        const response = await apiAdminGetProducts(page)
+        if (!response.data.success) return
+        this.products = response.data.products
+        this.pagination = response.data.pagination
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 }

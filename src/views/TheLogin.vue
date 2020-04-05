@@ -92,15 +92,14 @@ export default {
       return dirty || validated ? valid : null
     },
     async signIn () {
-      const response = await apiLogLogin(this.user)
-      if (!response.data.success) return
-      this.$router.push('/admin/products')
-      this.$store.dispatch('alert/setMsgsAlert', {
-        duration: 2000,
-        id: Math.floor(new Date() / 1000),
-        msg: response.data.message,
-        variant: 'primary'
-      })
+      try {
+        const response = await apiLogLogin(this.user)
+        if (!response.data.success) return
+        this.$router.push('/admin/products')
+        this.$store.dispatch('alert/setMsgsAlert', this._$alert(response.data.message))
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 }

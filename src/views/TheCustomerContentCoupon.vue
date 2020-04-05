@@ -94,17 +94,16 @@ export default {
   },
   methods: {
     async getCoupons (page = 1) {
-      const response = await apiAdminGetCoupons(page)
-      if (!response.data.success) return
-      this.coupons = response.data.coupons
+      try {
+        const response = await apiAdminGetCoupons(page)
+        if (!response.data.success) return
+        this.coupons = response.data.coupons
+      } catch (e) {
+        console.log(e)
+      }
     },
     onCopy (e) {
-      this.$store.dispatch('alert/setMsgsAlert', {
-        duration: 2000,
-        id: Math.floor(new Date() / 1000),
-        msg: '已複製優惠碼',
-        variant: 'warning'
-      })
+      this.$store.dispatch('alert/setMsgsAlert', this._$alert('已複製優惠碼', 'warning'))
     },
     onError () {
       console.log('failed')

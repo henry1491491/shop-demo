@@ -12,6 +12,7 @@ import './plugins/vue-moment'
 import './plugins/vue-loading-overlay'
 import './plugins/vuetify'
 import './components/index'
+import './utils/alert'
 import './utils/products-filter'
 
 Vue.filter('currency', currencyFilter)
