@@ -62,19 +62,19 @@ export default {
   },
   actions: {
     async addToCart ({ commit, dispatch }, item) {
-      commit('SET_STATUS_LOADINGITEM', item.id)
-      const cart = {
-        product_id: item.id,
-        qty: item.qty
-      }
-      const response = await apiAddToCart({ data: cart })
-      if (!response.data.success) return
-      commit('SET_STATUS_LOADINGITEM', '')
-      dispatch('getCart')
-      return {
-        id: Math.floor(new Date() / 1000),
-        msg: response.data.message,
-        variant: 'warning'
+      try {
+        commit('SET_STATUS_LOADINGITEM', item.id)
+        const cart = {
+          product_id: item.id,
+          qty: item.qty
+        }
+        const response = await apiAddToCart({ data: cart })
+        if (!response.data.success) return
+        commit('SET_STATUS_LOADINGITEM', '')
+        dispatch('getCart')
+        return this._$alert(response.data.message, 'warning')
+      } catch (e) {
+        console.log(e)
       }
     },
     async getCart ({ commit }) {
@@ -93,9 +93,13 @@ export default {
       }
     },
     async getProductsAll ({ dispatch }) {
-      const response = await getProductsAll()
-      if (!response.data.success) return
-      dispatch('initialize', response.data.products)
+      try {
+        const response = await getProductsAll()
+        if (!response.data.success) return
+        dispatch('initialize', response.data.products)
+      } catch (e) {
+        console.log(e)
+      }
     },
     async initialize ({ commit }, data) {
       commit('SET_PRODUCTS_ALL', data)

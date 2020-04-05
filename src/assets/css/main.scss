@@ -1,5 +1,3 @@
-// base
-@import "./base/basic";
 
 // components
 @import "./components/baseCardEmpty";
@@ -12,12 +10,10 @@
 @import "./views/app.scss";
 @import "./views/theLogin";
 @import "./views/theDashboard";
-@import "./views/theCustomer";
 @import "./views/theCustomerNavbar";
 @import "./views/theCustomerCheckout";
 @import "./views/theCustomerContent";
 @import "./views/theCustomerContentCoupon";
-@import "./views/theCustomerContentFavor";
 @import "./views/theCustomerContentProductDetail";
 @import "./views/theCustomerFooter";
 @import "./views/theCustomerShoppingCartContent";
@@ -25,4 +21,6 @@
 
 // venders
 @import "./venders/bootstrap";
+
+
 

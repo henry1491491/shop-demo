@@ -57,7 +57,10 @@
         class="mb-3"
       >
         <template slot="action">
-          <b-button>
+          <b-button
+            size="sm"
+            @click="$router.push('/')"
+          >
             到首頁逛逛
           </b-button>
         </template>

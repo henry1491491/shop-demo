@@ -149,9 +149,15 @@
 
 <script>
 import { apiCustomerGetProduct } from '../plugins/axios'
+import BasePaginationProducts from '../components/BasePaginationProducts'
+import BaseSidebar from '../components/BaseSidebar'
 
 export default {
   name: 'TheCustomerContent',
+  components: {
+    BasePaginationProducts,
+    BaseSidebar
+  },
   data () {
     return {
       cartAmountOptions: [

@@ -16,12 +16,14 @@
 </template>
 
 <script>
+import BaseCarousel from '../components/BaseCarousel'
 import TheCustomerNavbar from '../views/TheCustomerNavbar'
 import TheCustomerFooter from '../views/TheCustomerFooter'
 
 export default {
   name: 'TheCustomer',
   components: {
+    BaseCarousel,
     TheCustomerNavbar,
     TheCustomerFooter
   },

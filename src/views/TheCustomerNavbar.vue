@@ -294,11 +294,13 @@
 
 <script>
 import { apiCustomerRemoveCart } from '../plugins/axios'
+import BaseNavbar from '../components/BaseNavbar'
 import BaseStepper from '../components/BaseStepper'
 
 export default {
   name: 'TheCustomerNavbar',
   components: {
+    BaseNavbar,
     BaseStepper
   },
   data () {

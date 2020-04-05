@@ -5,21 +5,20 @@
       type="light"
       variant="fade"
     >
-      <router-link :to="navbarHref">
-        <b-button
-          class="d-flex align-items-center justify-content-center"
-          variant="link"
+      <b-button
+        class="d-flex align-items-center justify-content-center"
+        variant="link"
+        @click="$router.push(navbarHref)"
+      >
+        <img
+          alt="orchids"
+          class="d-inline-block align-top mr-2"
+          height="40px"
+          src="https://image.flaticon.com/icons/svg/898/898143.svg"
+          width="40px"
         >
-          <img
-            alt="orchids"
-            class="d-inline-block align-top mr-2"
-            height="40px"
-            src="https://image.flaticon.com/icons/svg/898/898143.svg"
-            width="40px"
-          >
-          <span class="nav-title text-primary">{{ navbarTitle }}</span>
-        </b-button>
-      </router-link>
+        <span class="nav-title text-primary">{{ navbarTitle }}</span>
+      </b-button>
       <slot />
     </b-navbar>
   </div>

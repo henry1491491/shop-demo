@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import BaseCarouselBody from '../components/BaseCarouselBody'
 export default {
   name: 'BaseCarousel',
   props: {
@@ -55,6 +56,9 @@ export default {
     // eslint-disable-next-line vue/require-default-prop
     items: { type: Array }
 
+  },
+  components: {
+    BaseCarouselBody
   },
   data () {
     return {
