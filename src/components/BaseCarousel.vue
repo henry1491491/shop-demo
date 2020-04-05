@@ -70,21 +70,21 @@ export default {
           return {
             content: el.content,
             id: key,
-            imgStyle: `transform:translate3d(${this.propsItems[key].position}px, 0px, 0px);transition: transform 1s;opacity:1`,
+            imgStyle: `transform:translate3d(${this.propsItems[key].position}px, 0px, 0px);transition:transform 1s;opacity:1`,
             imgUrl: this.propsItems[key].url
           }
-        } else if (el.position === -166 || el.position === 616) {
+        } else if (el.position === -616 || el.position === 616) {
           return {
             content: el.content,
             id: key,
-            imgStyle: `transform:translate3d(${this.propsItems[key].position}px, 0px, 0px);transition: transform .2s;z-index:0`,
+            imgStyle: `transform:translate3d(${this.propsItems[key].position}px, 0px, 0px);transition: all ease 1s`,
             imgUrl: this.propsItems[key].url
           }
         } else {
           return {
             content: el.content,
             id: key,
-            imgStyle: `transform:translate3d(${this.propsItems[key].position}px, 0px, 0px);transition: all ease 1s`,
+            imgStyle: `transform:translate3d(${this.propsItems[key].position}px, 0px, 0px);opacity:.2;z-index:-10;transition: all ease 1s`,
             imgUrl: this.propsItems[key].url
           }
         }

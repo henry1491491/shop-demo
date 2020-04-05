@@ -317,12 +317,12 @@ export default {
       ) {
         this.favorList.push(item.title)
         setTitleToStorage()
-        this.$store.dispatch('alert/setMsgsAlert', this._$alert('已加入'))
+        this.$store.dispatch('alert/setMsgsAlert', this._$alert('已加入願望清單'))
       } else {
         const favorIndex = this.favorList.findIndex(isFavored)
         this.favorList.splice(favorIndex, 1)
         setTitleToStorage()
-        this.$store.dispatch('alert/setMsgsAlert', this._$alert('已移除', 'warning'))
+        this.$store.dispatch('alert/setMsgsAlert', this._$alert('已從願望清單移除', 'warning'))
       }
     },
     sortByPrice (item) {

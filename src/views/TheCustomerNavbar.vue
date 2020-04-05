@@ -62,7 +62,7 @@
               target="heart-outline"
               variant="secondary"
             >
-              心願清單
+              願望清單
             </b-tooltip>
           </b-nav-item>
 
@@ -187,15 +187,14 @@
           >
             <span class="mr-2">總計：{{ cartsTotal.total }}</span>
             <span class="text-danger h5">折扣價：{{ cartsTotal.final_total }}</span>
-            <router-link to="/customer_carts">
-              <b-button
-                class="float-right"
-                size="sm"
-                variant="danger"
-              >
-                到購物車
-              </b-button>
-            </router-link>
+            <b-button
+              class="float-right"
+              size="sm"
+              variant="danger"
+              @click="goToCustomerCart"
+            >
+              到購物車
+            </b-button>
           </div>
         </template>
       </b-modal>
@@ -204,7 +203,7 @@
     <base-navbar
       v-show="$route.path === '/favor'"
       navbar-href="/favor"
-      navbar-title="心願清單"
+      navbar-title="願望清單"
     >
       <b-button
         class="ml-auto text-secondary"
@@ -246,7 +245,7 @@
             variant="link"
             @click="$router.push('/favor')"
           >
-            心願清單
+            願望清單
           </b-button>
           <b-button
             class="text-secondary"
@@ -271,7 +270,7 @@
         variant="link"
         @click="$router.push('/favor')"
       >
-        心願清單
+        願望清單
       </b-button>
       <b-button
         class="text-secondary"
@@ -389,9 +388,12 @@ export default {
     },
     showCarts () {
       this.$refs['show-cart-modal'].show()
+    },
+    goToCustomerCart () {
+      this.$router.push('/customer_carts')
       window.setTimeout(() => {
         this.$refs['show-cart-modal'].hide()
-      }, 1000)
+      }, 200)
     },
     goToCoupon () {
       this.$router.push('/coupon')

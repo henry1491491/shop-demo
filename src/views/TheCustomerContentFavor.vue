@@ -1,6 +1,7 @@
 <template>
   <div id="views-thecustomer_contentfavor">
-    <b-row v-if="!loading">
+    <!--
+    <b-row>
       <b-col md="1" />
       <b-col>
         <b-row>
@@ -17,7 +18,8 @@
       </b-col>
       <b-col md="1" />
     </b-row>
-    <b-row v-if="loading">
+    -->
+    <b-row>
       <b-col md="1" />
       <b-col>
         <b-row>
@@ -46,8 +48,20 @@
       <b-col md="1" />
     </b-row>
 
-    <div v-if="!favorProducts.length && loading">
-      <base-card-empty card-text="心願清單沒有東西喔！" />
+    <div
+      v-if="!favorProducts.length"
+      class="d-flex flex-column"
+    >
+      <base-card-empty
+        card-text="心願清單沒有東西喔！"
+        class="mb-3"
+      >
+        <template slot="action">
+          <b-button>
+            到首頁逛逛
+          </b-button>
+        </template>
+      </base-card-empty>
     </div>
 
     <!-- modal -->
@@ -139,8 +153,7 @@ export default {
         { text: '選購 10 件', value: 10 }
       ],
       favorList: [],
-      product: {},
-      loading: false
+      product: {}
     }
   },
   mounted () {
@@ -185,17 +198,7 @@ export default {
       }
     },
     async getFavorTitleList () {
-      try {
-        this.loading = false
-        const result = await window.setTimeout(() => {
-          this.loading = true
-          return this.loading
-        }, 1000)
-        if (!result) return
-        this.favorList = JSON.parse(localStorage.getItem('favorItem')) || []
-      } catch (e) {
-        console.log(e)
-      }
+      this.favorList = JSON.parse(localStorage.getItem('favorItem')) || []
     },
     async getProduct (id) {
       try {
@@ -228,12 +231,12 @@ export default {
       ) {
         this.favorList.push(item.title)
         setTitleToStorage()
-        this.$store.dispatch('alert/setMsgsAlert', this._$alert('已加入'))
+        this.$store.dispatch('alert/setMsgsAlert', this._$alert('已加入願望清單'))
       } else {
         const favorIndex = this.favorList.findIndex(isFavored)
         this.favorList.splice(favorIndex, 1)
         setTitleToStorage()
-        this.$store.dispatch('alert/setMsgsAlert', this._$alert('已移除', 'warning'))
+        this.$store.dispatch('alert/setMsgsAlert', this._$alert('已從願望清單移除', 'warning'))
       }
     }
   }

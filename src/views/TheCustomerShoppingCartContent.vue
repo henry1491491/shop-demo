@@ -202,7 +202,10 @@ export default {
           code: this.coupon_code
         }
         const response = await apiCustomerAddCouponCode({ data: coupon })
-        if (!response.data.success) return
+        if (!response.data.success) {
+          this.$store.dispatch('alert/setMsgsAlert', this._$alert(response.data.message))
+          return
+        }
         const result = await this.$store.dispatch('customer/getCart')
         if (!result.status) return
         this.$store.dispatch('alert/setMsgsAlert', this._$alert('已輸入優惠碼'))
@@ -214,15 +217,14 @@ export default {
       try {
         const couponPrice = parseInt(code.replace(/[a-z]/g, ''))
         extend('coupon_can_use', total => {
-          if (total > couponPrice) {
+          if (code && total > couponPrice) {
             return true
           }
           return '您的金額不能使用這個優惠券喔'
         })
         const isValidate = await validate(total, 'coupon_can_use')
-        console.log(isValidate)
         if (!isValidate.errors.length) return true
-        this.$store.dispatch('alert/setMsgsAlert', this._$alert(isValidate.errors, 'danger'))
+        this.$store.dispatch('alert/setMsgsAlert', this._$alert(isValidate.errors[0], 'danger'))
       } catch (e) {
         console.log(e)
       }

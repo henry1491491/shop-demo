@@ -1,10 +1,11 @@
 $container-width: 100%;
 $item-height: 300px;
 $item-bg-color: lightgray;
-$items-gutters: 16px;
-$item-side-width: calc((100% - 568px) / 2);
+$items-gutters: 1rem;
+$item-side-width: calc((100% - 600px - 2rem) / 2);
 $item-middle-width: 600px;
-@mixin btn {
+
+%btn {
   background-color: #c89666;
   cursor: pointer;
   height: 60px;
@@ -25,7 +26,7 @@ $item-middle-width: 600px;
     top: 20px;
   }
 }
-@mixin carousel-item {
+%carousel-item {
   background-color: $item-bg-color;
   height: $item-height;
   position: absolute;
@@ -38,7 +39,7 @@ $item-middle-width: 600px;
     width: $container-width;
 
     .carousel-item-middle {
-      @include carousel-item;
+      @extend %carousel-item;
       left: calc(50% - 300px);
       width: $item-middle-width;
       li {
@@ -59,29 +60,29 @@ $item-middle-width: 600px;
       }
     }
     .carousel-item-left {
-      @include carousel-item;
+      @extend %carousel-item;
       left: 0;
       min-width: $item-side-width;
     }
     .carousel-item-right {
-      @include carousel-item;
+      @extend %carousel-item;
       right: 0;
       min-width: $item-side-width;
     }
 
     .item {
       height: $item-height;
-      opacity: 0.3;
+      opacity: 0.2;
       width: $item-middle-width;
       z-index: 1;
     }
 
     .prev-btn {
-      @include btn;
+      @extend %btn;
       left: calc(50% - 322px);
     }
     .next-btn {
-      @include btn;
+      @extend %btn;
       right: calc(50% - 322px);
     }
   }

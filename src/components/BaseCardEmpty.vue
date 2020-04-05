@@ -4,6 +4,9 @@
     <b-card-text class="text-center mt-4">
       {{ cardText }}
     </b-card-text>
+    <b-card-text class="text-center">
+      <slot name="action" />
+    </b-card-text>
   </div>
 </template>
 
