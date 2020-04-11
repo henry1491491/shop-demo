@@ -37,20 +37,17 @@ const routes = [
       {
         path: 'products',
         name: 'TheDashboardProducts',
-        component: TheDashboardProducts,
-        meta: { requiresAuth: true }
+        component: TheDashboardProducts
       },
       {
         path: 'orders',
         name: 'TheDashboardOrders',
-        component: TheDashboardOrders,
-        meta: { requiresAuth: true }
+        component: TheDashboardOrders
       },
       {
         path: 'coupons',
         name: 'TheDashboardCoupons',
-        component: TheDashboardCoupons,
-        meta: { requiresAuth: true }
+        component: TheDashboardCoupons
       }
     ]
   },

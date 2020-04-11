@@ -96,7 +96,9 @@ export default {
     async getCoupons (page = 1) {
       try {
         const response = await apiAdminGetCoupons(page)
-        if (!response.data.success) return
+        if (!response.data.success) {
+          throw response.data.message
+        }
         this.coupons = response.data.coupons
       } catch (e) {
         console.log(e)
