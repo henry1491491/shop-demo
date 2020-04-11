@@ -4,6 +4,7 @@ node_modules
 # /dist
 
 # local env files
+.env
 .env.local
 .env.*.local
 
@@ -13,6 +14,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Editor directories and files
+.editorconfig
 .idea
 .vscode
 *.suo
@@ -20,3 +22,12 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# deploy
+.travis.yml
+deploy.sh
+
+# other config
+babel.config.js
+vue.config.js
+.eslintric.js
